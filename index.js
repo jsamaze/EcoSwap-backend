@@ -110,9 +110,9 @@ mongoose.connection.on("error", (err) => {
 console.log("Database error:" + err);
 });
 
-
+console.log(process.env)
 // start the server
-server.listen(process.env.port, () => {
+server.listen(process.env.PORT,() => {
     console.log(`Listening at localhost:${process.env.PORT}`)
 });
 
@@ -137,6 +137,7 @@ app.get("/user/photo/:username", fetchUserPhoto)
 
 //C. Listed Item - one (CRUD)
 
+
 //insert logic to count number of views
 // app.get("/ListedItem",NeedAuthenticate,)
 // app.post("/ListedItem",NeedAuthenticate,)
@@ -144,7 +145,7 @@ app.get("/user/photo/:username", fetchUserPhoto)
 //D. Listed Item - multiple (R)
 // preview
 // trending
-// popular
+// search
 
 //E. Listed Item Photo (CRUD)
 

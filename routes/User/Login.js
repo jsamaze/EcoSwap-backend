@@ -4,6 +4,7 @@ export default  async (req,res,next) => {
     console.log(req.body)
     try {
         var user = await UserModel.findOne({ username: req.body.username });
+        console.log(user)
         if (user == null){
             user = await UserModel.findOne({ email: req.body.email });
         }
