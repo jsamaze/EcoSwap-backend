@@ -4,8 +4,15 @@ export default  async (req,res,next) => {
     try {
         var user = await UserModel.findOne({ username: req.params.username }, "fullName username email preferredBusStop about").lean();
 
-        console.log(user)
-        res.status(200).send(user)
+        if (user){
+            res.status(200).send({
+                status:"Success",
+                data:user
+            })
+        } else {
+            throw new Error("No such user")
+        }
+
 
           
     } catch (e){

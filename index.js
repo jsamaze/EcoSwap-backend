@@ -27,6 +27,9 @@ import ConfirmEmail from './routes/User/ConfirmEmail.js';
 import ConfirmPassword from './routes/User/ConfirmPassword.js';
 import FetchUser from './routes/User/FetchUser.js';
 import UpdateUser from './routes/User/UpdateUser.js';
+import NeedAuth from './custom_middleware/NeedAuth.js';
+import CreateListedItem from './routes/ListedItem/CreateListedItem.js';
+import ReadListedItem from './routes/ListedItem/ReadListedItem.js';
 
 // access the cert
 const key = fs.readFileSync('./HTTPS/key.pem');
@@ -147,7 +150,8 @@ app.get("/user/photo/:username", fetchUserPhoto)
 // missing :  delete photo
 
 //C. Listed Item - one (CRUD)
-
+app.post("/listedItem",NeedAuthenticate,CreateListedItem)
+app.get("/listedItem/:id",NeedAuthenticate,ReadListedItem)
 
 //insert logic to count number of views
 // app.get("/ListedItem",NeedAuthenticate,)

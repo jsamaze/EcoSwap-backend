@@ -47,6 +47,10 @@ export let ListedItemSchema = new Schema ({
     },
     fulfilled_on : {
         type : Date
+    },
+    views : {
+        type: Number,
+        default:0
     }
 },
 {

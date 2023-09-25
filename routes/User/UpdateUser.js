@@ -1,6 +1,7 @@
+import generateEmailOTP from "../../helper/generateEmailOTP.js";
 import { UserModel } from "../../model/index.js";
 
-const approvedAttributes = ["fullName", "preferredBusStop","about"]
+const approvedAttributes = ["fullName", "preferredBusStop","about","email"]
 
 export default  async (req,res,next) => {
     try {
@@ -27,9 +28,16 @@ export default  async (req,res,next) => {
 
         await UserModel.updateOne({username:req.session.username},req.body)
 
-        res.status(200).send({
-            status:"update successful"
-        })
+        if (Object.keys(req.body).includes("email")){
+            generateEmailOTP(req.session.username)
+            res.status(200).send({
+                status:"update successful - please verify email"
+            })
+        } else {
+            res.status(200).send({
+                status:"update successful"
+            })
+        }
 
 
     } catch (e){

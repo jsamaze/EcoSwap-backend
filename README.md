@@ -23,7 +23,7 @@ Used MongoDB - ID and timestamp automatically generated
 | field | `itemName` | `user` | `description` | `category` | `condition` | `photoName`| `views`| `tags`| `given_on`|
 |:------:|:--------:|:--------:|:--------:|:--------:|:--------:|:-----:|:-----:|:-:|:-:|
 | type | String | UserId | String | 'Electronics' 'Fashion', 'Furniture' 'Kitchenware' | 'new' 'old'| String array -  maximum 5 | Number | String array | Date
-required | yes | yes | no | no | no | no |yes| no| no
+required | yes | yes | no | yes | yes | no |yes| no| no
 
 **none are required to be unique - up to user to not have duplicate listing**
 
@@ -47,9 +47,9 @@ none are required to be unique - up to user to not have duplicate listing
 | type | UserID | UserID| array of objects| date | Array of ListedItemID | Array of ListedItemID |
 | required | yes | yes | no| no|
 
-### Listed Item <=> User relation
+### Views relation
 
-|field|`user`|`ListedItem`|`last_view_time`|
+|field|`user`|`item`|`lastSeen`|
 |:-:|:-:|:-:|:-:|
 |type | UserID|ListedItemID| last_view_time|
 | required | yes | yes | yes|
@@ -187,6 +187,7 @@ No body
 ```
 
 ## 4. Generate OTP :lock: :key:
+**IMPORTANT** - OTP can be used to either verify email/change password
 ```API 
 GET /user/generateOTP/
 ```
@@ -295,6 +296,7 @@ You can only update info about yourself
 | `fulName`  | String |    No    |  -  |
 | `preferredBusStop`  | String |    No    |  -  |
 | `about`  | String |    No    |  -  |
+| `email` | String | No| Will require OTP validation |
 
 ```json
 {
@@ -303,6 +305,13 @@ You can only update info about yourself
     "about" : ""
 }
 ```
+### Response 200 OK
+```json
+{
+    "status":"update successful - please verify email"
+}
+```
+
 ### Response 400 Bad Request
 ```json
 {
@@ -325,7 +334,6 @@ You can only update info about yourself
 }
 ```
 
----
 
 ## B. User Photo API Endpoints
 
@@ -343,7 +351,7 @@ Content-Type: multipart/form-data
 
 use ```<input type='file' name='userPhoto'>``` 
 
-note to group : please see frontend cropping section for guidance
+***note to group : please see frontend cropping section for guidance***
 
 
 ### Response - 200 Success
@@ -398,6 +406,16 @@ GET /user/photo/:username
 ```http 
 POST /listedItem/
 ```
+
+### Body
+|  Attribute  |  Type  | Required | Description |
+| :---------: | :----: | :------: | :---------: |
+| `itemName`  | String |    Yes    |  Don't need to be unique  |
+| `description`  | String |    No    |  -  |
+| `category`  | String |    Yes    |  -  |
+| `condition` | String | Yes|  |
+| `tags` | Array of Strings | No | - 
+
 ### Body
 ```json
 {
