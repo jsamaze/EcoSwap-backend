@@ -4,9 +4,11 @@ import { WishlistItemSchema} from "./WishlistItemSchema.js";
 import { ListedItemSchema } from "./ListedItemSchema.js";
 import { ChatSchema } from "./ChatSchema.js";
 import { ViewSchema } from "./ViewSchema.js";
+import { BusStopSchema } from "./BusStopSchema.js";
 
 export let UserModel = model("user", UserSchema);
 export let WishlistItemModel = model("wishlistItem", WishlistItemSchema);
 export let ListedItemModel = model("listedItem", ListedItemSchema);
 export let ChatModel = model("chat", ChatSchema);
-export let ViewModel = model("view", ViewSchema)
+export let ViewModel = model("view", ViewSchema);
+export let BusStopModel = model("busStop",BusStopSchema)

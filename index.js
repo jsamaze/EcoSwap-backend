@@ -10,7 +10,6 @@ import path from 'path';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import { Server } from 'socket.io';
-import AWS from 'aws-sdk'
 
 //import router function
 import Register from "./routes/User/Register.js"
@@ -19,10 +18,11 @@ import Login from "./routes/User/Login.js";
 
 import NeedAuthenticate from "./custom_middleware/NeedAuth.js";
 import AlreadyAuthenticate from './custom_middleware/AlwaysAuth.js';
+import populateBusStop from "./helper/poplateBusStop.js"
 
 import insertUserPhoto from './routes/UserPhoto/insertUserPhoto.js';
 import fetchUserPhoto from './routes/UserPhoto/fetchUserPhoto.js';
-import generateOTP from './helper/generateEmailOTP.js';
+import generateOTP from './helper/generateOTP.js';
 import ConfirmEmail from './routes/User/ConfirmEmail.js';
 import ConfirmPassword from './routes/User/ConfirmPassword.js';
 import FetchUser from './routes/User/FetchUser.js';
@@ -30,6 +30,8 @@ import UpdateUser from './routes/User/UpdateUser.js';
 import NeedAuth from './custom_middleware/NeedAuth.js';
 import CreateListedItem from './routes/ListedItem/CreateListedItem.js';
 import ReadListedItem from './routes/ListedItem/ReadListedItem.js';
+import { BusStopModel } from './model/index.js';
+import poplateBusStop from './helper/poplateBusStop.js';
 
 // access the cert
 const key = fs.readFileSync('./HTTPS/key.pem');
@@ -94,12 +96,7 @@ const upload = multer({
     fileSize: 5 * 1024 * 1024, // limit file size to 5MB
   }, });
 
-//configure AWS
-AWS.config.update({
-  accessKeyId: process.env.AWS_KEY,
-  secretAccessKey: process.env.AWS_SECRET,
-  region: process.env.S3_REGION,
-});
+
 
 // configure mongoose
 async function main() {
@@ -169,6 +166,36 @@ app.get("/listedItem/:id",NeedAuthenticate,ReadListedItem)
 // --- not sure ---
 //for now the below one is merely a copy
 //F. WishlistItem - one (CRUD)
+
+//G. Map API
+app.get("/busStop/populate",async (req,res)=>{
+  try {
+    await poplateBusStop()
+    res.send({
+      status:"successful"
+    })
+  } catch(e){
+    res.status(500).send({
+      status:"failure",
+      problem:e.message
+    })
+  }
+})
+app.post("/busStop/radius",async (req,res)=>{
+  console.log(req.body)
+  var result = await BusStopModel.find({
+    loc: {
+       $geoWithin: {
+          $centerSphere: [
+             [ req.body.longitude, req.body.latitude ],
+             req.body.radiusInKm / 6378.1
+          ]
+       }
+    }
+ } )
+
+ res.send(result)
+})
 
 
 

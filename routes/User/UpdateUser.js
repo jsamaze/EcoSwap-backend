@@ -1,4 +1,4 @@
-import generateEmailOTP from "../../helper/generateEmailOTP.js";
+import generateEmailOTP from "../../helper/generateOTP.js";
 import { UserModel } from "../../model/index.js";
 
 const approvedAttributes = ["fullName", "preferredBusStop","about","email"]

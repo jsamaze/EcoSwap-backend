@@ -2,6 +2,7 @@
 import validator from "validator";
 import { Schema } from "mongoose";
 import bcrypt from "bcrypt";
+import {s3} from '../global/S3.js'
 
 const saltRounds=10;
 
@@ -60,7 +61,17 @@ let UserSchema = new Schema ({
                 if (err) return cb(err);
                 cb(null,isMatch);
                 })
-            }
+            },
+        async getImageURL (){
+                console.log(this.photoName)
+                var url = await s3.getSignedUrl('getObject',{
+                    Bucket:"ecoswap",
+                    Key:this.photoName
+                })
+                return url
+
+
+        }
         },
         timestamps:true
 })

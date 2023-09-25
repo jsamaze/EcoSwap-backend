@@ -1,5 +1,15 @@
 # EcoSwap - Backend
 
+To-do
+- [x] Test radius API 
+- [ ] Set up cron job
+- [ ] Complete ListedItem API
+- [ ] Complete ListedItem Pictures API
+- [ ] Complete WishList API (single)
+- [ ] Complete ListedItem Search
+- [ ] Complete algorithm
+- [ ] Fake data up
+
 Provides core technical functions for the project
 - CRUD operations as REST API (MongoDB and Amazon S3 backed)
 - Server for Socket Realtime chatting / live view count

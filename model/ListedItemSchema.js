@@ -54,6 +54,19 @@ export let ListedItemSchema = new Schema ({
     }
 },
 {
+    methods:{
+        async getImageURLs(){
+            var result = await Promise.all(
+                this.photoName.map(async photoName=>{
+                    return await s3.getSignedUrl('getObject',{
+                        Bucket:"ecoswap",
+                        Key:this.photoName
+                    })
+                })
+            ) 
+            return result
+            }
+        },
     timestamps:true
 })
 
