@@ -10,20 +10,20 @@ Provides core technical functions for the project
 Used MongoDB - ID and timestamp automatically generated
 
 ### User Relation
-|field | `fullName` | `username` | `email` | `password` | `photoName` | `preferredBusStop` | `emailVerified`|
-|:------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:-:|
-| type| String | String | String | String | String | String | Boolean |
-| required | yes | yes | yes | yes | no| no | yes|
-| unique | no | yes | yes | no (by theory yes) | yes | no | no|
+|field | `fullName` | `username` | `email` | `password` | `photoName` | `preferredBusStop` |`about`|  `emailVerified`|
+|:------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:-:|:-:|
+| type| String | String | String | String | String | String |String | Boolean |
+| required | yes | yes | yes | yes | no| no | no | yes| 
+| unique | no | yes | yes | no (by theory yes) | yes | no | no| yes|
 
 **To discuss - how does Wish List and Listed relate**
 
 ### Listed Item Relation 
 
-| field | `itemName` | `user` | `description` | `category` | `condition` | `photoName`| `views`| `given_on`|
-|:------:|:--------:|:--------:|:--------:|:--------:|:--------:|:-----:|:-----:|:-:|
-| type | String | UserId | String | 'Electronics' 'Fashion', 'Furniture' 'Kitchenware' | 'new' 'old'| String array -  maximum 5 | Number | Date
-required | yes | yes | no | no | no | no |yes| no|
+| field | `itemName` | `user` | `description` | `category` | `condition` | `photoName`| `views`| `tags`| `given_on`|
+|:------:|:--------:|:--------:|:--------:|:--------:|:--------:|:-----:|:-----:|:-:|:-:|
+| type | String | UserId | String | 'Electronics' 'Fashion', 'Furniture' 'Kitchenware' | 'new' 'old'| String array -  maximum 5 | Number | String array | Date
+required | yes | yes | no | no | no | no |yes| no| no
 
 **none are required to be unique - up to user to not have duplicate listing**
 
@@ -33,10 +33,10 @@ For a view by a user to count, 5 minutes must have elapsed since last viewing
 
 ### Wish List Item Relation 
 
-| field | `itemName` | `user` | `description` | `category` | `condition` | `photoName`|`fulfilled_on`|
-|:------:|:--------:|:--------:|:--------:|:--------:|:--------:|:-----:|:-----:|
-| type | String | UserId | String | 'Electronics' 'Fashion', 'Furniture' 'Kitchenware' | 'new' 'old'| String array -  maximum 5 | Date
-required | yes | yes | no | no | no | no | no
+| field | `itemName` | `user` | `description` | `category` | `condition` | `tags`|`photoName`|`fulfilled_on`|
+|:------:|:--------:|:--------:|:--------:|:--------:|:--------:|:-----:|:-----:|:-:|
+| type | String | UserId | String | 'Electronics' 'Fashion', 'Furniture' 'Kitchenware' |  'new' 'old'| String array|String array -  maximum 5 | Date |
+required | yes | yes | no | no | no | no | no|no |
 
 none are required to be unique - up to user to not have duplicate listing
 
@@ -186,11 +186,10 @@ No body
 }
 ```
 
-## 4. Generate email OTP :lock: :key:
+## 4. Generate OTP :lock: :key:
 ```API 
-GET /user/emailOTP/
+GET /user/generateOTP/
 ```
-
 ### Response - 200 OK
 ```json
 { 
@@ -201,6 +200,18 @@ GET /user/emailOTP/
 
 ```API
 POST /user/confirmEmail
+```
+
+|  Attribute  |  Type  | Required | Description |
+| :---------: | :----: | :------: | :---------: |
+| `otp`  | number |    Yes    |  -  |
+|
+### Body
+
+```API
+{
+    "otp":123456
+}
 ```
 ### Response - 200 OK
 ```json
@@ -221,6 +232,98 @@ POST /user/confirmEmail
 }
  ```
 
+## 7. Confirm change password OTP :lock: :key:
+
+```API
+POST /user/confirmPassword
+```
+### Body
+|  Attribute  |  Type  | Required | Description |
+| :---------: | :----: | :------: | :---------: |
+| `otp`  | number |    Yes    |  -  |
+| `password`  | String |    Yes    |  -  |
+
+```json
+{
+    "otp":123456,
+    "password":"abcd"
+}
+```
+### Response - 200 OK
+```json
+{ 
+    "status" : "success"
+}
+```
+### Response - 401 Unauthenticated
+```json
+{ 
+    "status" : "unable to verify OTP"
+}
+```
+### Response - 500 Internal server error
+```json
+{
+    "status" : "unable to find user"
+}
+ ```
+
+## 8. User Info
+```api
+POST /user/:userid
+```
+:up: replace  `:userid` with userID
+### Response - 200 OK
+```json
+{
+	"_id": "651116a5497096ae12395d2b",
+	"fullName": "joshua",
+	"username": "joshua",
+	"email": "jsumarlin.2022@scis.smu.edu.sg",
+	"preferredBusStop": "01234"
+}
+```
+
+## 9.User Info update :lock: :key:
+```HTTP 
+PATCH /user/
+```
+You can only update info about yourself
+### Body
+|  Attribute  |  Type  | Required | Description |
+| :---------: | :----: | :------: | :---------: |
+| `fulName`  | String |    No    |  -  |
+| `preferredBusStop`  | String |    No    |  -  |
+| `about`  | String |    No    |  -  |
+
+```json
+{
+    "fullName" : "Joshua S",
+    "preferredBusStop" :"03456",
+    "about" : ""
+}
+```
+### Response 400 Bad Request
+```json
+{
+    "status":"username cannot be set in User"
+}
+```
+
+### Response 400 Bad Request
+```json
+{
+    "status":"Invalid input",
+    "problem" : //mongoDB validation error
+}
+```
+
+### Response 500 Internal Server Error
+```json
+{
+    "status":"failed updating user"
+}
+```
 
 ---
 
@@ -230,13 +333,12 @@ POST /user/confirmEmail
 
 
 ```API
-POST /user/login
+POST /user/photo
 ```
 
 ### Body
 ```http
 Content-Type: multipart/form-data
-
 ```
 
 use ```<input type='file' name='userPhoto'>``` 
@@ -288,14 +390,30 @@ GET /user/photo/:username
 }
 ```
 
-## DELETE - not yet
----
+
 ## C. ListedItems - one item
 
-## 1. CREATE :lock: :key:
+
+## 1a. CREATE :lock: :key:
 ```http 
-POST /listedItem/:itemid
+POST /listedItem/
 ```
+### Body
+```json
+{
+    "itemName" : "Microwave oven",
+    "description" : "Pre-used oven",
+    "category" : "Electronics",
+    "condition" : "old",
+    "tags": ["Sony", "popcorn", "white"],
+}
+```
+
+## 1b. CREATE - picture :lock: :key:
+```http 
+POST /listedItem/photo/:itemid
+```
+
 ## 2. UPDATE  :lock: :key:
 ```api 
 UPDATE /listedItem/:itemid
@@ -303,6 +421,24 @@ UPDATE /listedItem/:itemid
 ## 3. READ  :lock: :key: - limited for non-auth
 ```api 
 GET /listedItem/:itemid
+```
+
+
+```json
+{
+    "status" : "success",
+    "data": {
+                "itemName" : "Microwave oven",
+                "user" : {
+
+                }
+                "description" : "Pre-used oven",
+                "category" : "Electronics",
+                "condition" : "old",
+                "tags": ["Sony", "popcorn", "white"],
+                "photoUrl" : ["url1","url2",...]
+            }
+}
 ```
 
 ***Important*** - counts the number of user that sees it

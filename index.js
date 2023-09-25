@@ -20,15 +20,13 @@ import Login from "./routes/User/Login.js";
 import NeedAuthenticate from "./custom_middleware/NeedAuth.js";
 import AlreadyAuthenticate from './custom_middleware/AlwaysAuth.js';
 
-import transporter from './helper/transporter.js';
-
-
 import insertUserPhoto from './routes/UserPhoto/insertUserPhoto.js';
 import fetchUserPhoto from './routes/UserPhoto/fetchUserPhoto.js';
-import generateEmailOTP from './helper/generateEmailOTP.js';
+import generateOTP from './helper/generateEmailOTP.js';
 import ConfirmEmail from './routes/User/ConfirmEmail.js';
-
-
+import ConfirmPassword from './routes/User/ConfirmPassword.js';
+import FetchUser from './routes/User/FetchUser.js';
+import UpdateUser from './routes/User/UpdateUser.js';
 
 // access the cert
 const key = fs.readFileSync('./HTTPS/key.pem');
@@ -114,7 +112,6 @@ mongoose.connection.on("error", (err) => {
 console.log("Database error:" + err);
 });
 
-console.log(process.env)
 // start the server
 server.listen(process.env.PORT,() => {
     console.log(`Listening at localhost:${process.env.PORT}`)
@@ -133,13 +130,16 @@ app.post("/user/register", Register)
 app.post("/user/login", AlreadyAuthenticate,Login)
 app.get('/user/logout',NeedAuthenticate, Logout)
 app.post("/user/confirmEmail",NeedAuthenticate,ConfirmEmail)
-app.get('/user/emailOTP',NeedAuthenticate,(req,res)=>{
-  generateEmailOTP(req.session.username)
+app.get('/user/generateOTP',NeedAuthenticate,(req,res)=>{
+  generateOTP(req.session.username)
   res.send({
     status:"Success - check your email"
   })
 })
-// missing : forget password
+app.post('/user/confirmPassword',NeedAuthenticate,ConfirmPassword)
+
+app.get('/user/:username',NeedAuthenticate,FetchUser)
+app.patch('/user/',NeedAuthenticate,UpdateUser)
 
 //B. User Photo
 app.post("/user/photo", NeedAuthenticate , upload.single("userPhoto"), insertUserPhoto)
@@ -225,3 +225,4 @@ function generatePrimes(quota) {
   }
   return primes;
 }
+
