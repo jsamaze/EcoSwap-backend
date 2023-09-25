@@ -10,11 +10,11 @@ Provides core technical functions for the project
 Used MongoDB - ID and timestamp automatically generated
 
 ### User Relation
-|field | `fullName` | `username` | `email` | `password` | `photoName` | `preferredBusStop` |
-|:------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
-| type| String | String | String | String | String | String
-| required | yes | yes | yes | yes | no| no |
-| unique | no | yes | yes | no (by theory yes) | yes | no |
+|field | `fullName` | `username` | `email` | `password` | `photoName` | `preferredBusStop` | `emailVerified`|
+|:------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:-:|
+| type| String | String | String | String | String | String | Boolean |
+| required | yes | yes | yes | yes | no| no | yes|
+| unique | no | yes | yes | no (by theory yes) | yes | no | no|
 
 **To discuss - how does Wish List and Listed relate**
 
@@ -64,6 +64,7 @@ none are required to be unique - up to user to not have duplicate listing
 ---
 ## A. User API Endpoints
 
+Note to Joshua : implement OTP
 
 ## 1. CREATE - Register
 
@@ -95,9 +96,10 @@ POST /user/register
 
 ```json
 { 
-    "status": "account creation succeed"
+    "status": "please confirm email - account creation succeed"
 }
 ```
+*The user will receive an email with 6 digit OTP*
 
 ### Response - 500 Internal Server Error (MongoDB issue)
 
@@ -183,6 +185,43 @@ No body
    "problem" : //message inside exception
 }
 ```
+
+## 4. Generate email OTP :lock: :key:
+```API 
+GET /user/emailOTP/
+```
+
+### Response - 200 OK
+```json
+{ 
+    "status" : "success - please check email"
+}
+```
+## 5. Confirm Email OTP :lock: :key:
+
+```API
+POST /user/confirmEmail
+```
+### Response - 200 OK
+```json
+{ 
+    "status" : "success"
+}
+```
+### Response - 401 Unauthenticated
+```json
+{ 
+    "status" : "unable to verify OTP"
+}
+```
+### Response - 500 Internal server error
+```json
+{
+    "status" : "unable to find user"
+}
+ ```
+
+
 ---
 
 ## B. User Photo API Endpoints

@@ -12,7 +12,6 @@ import mongoose from 'mongoose';
 import { Server } from 'socket.io';
 import AWS from 'aws-sdk'
 
-
 //import router function
 import Register from "./routes/User/Register.js"
 import Logout from "./routes/User/Logout.js";
@@ -21,9 +20,14 @@ import Login from "./routes/User/Login.js";
 import NeedAuthenticate from "./custom_middleware/NeedAuth.js";
 import AlreadyAuthenticate from './custom_middleware/AlwaysAuth.js';
 
+import transporter from './helper/transporter.js';
+
 
 import insertUserPhoto from './routes/UserPhoto/insertUserPhoto.js';
 import fetchUserPhoto from './routes/UserPhoto/fetchUserPhoto.js';
+import generateEmailOTP from './helper/generateEmailOTP.js';
+import ConfirmEmail from './routes/User/ConfirmEmail.js';
+
 
 
 // access the cert
@@ -128,6 +132,13 @@ app.post("/test",NeedAuthenticate,(req,res)=> {
 app.post("/user/register", Register)
 app.post("/user/login", AlreadyAuthenticate,Login)
 app.get('/user/logout',NeedAuthenticate, Logout)
+app.post("/user/confirmEmail",NeedAuthenticate,ConfirmEmail)
+app.get('/user/emailOTP',NeedAuthenticate,(req,res)=>{
+  generateEmailOTP(req.session.username)
+  res.send({
+    status:"Success - check your email"
+  })
+})
 // missing : forget password
 
 //B. User Photo

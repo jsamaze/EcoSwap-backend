@@ -35,6 +35,16 @@ let UserSchema = new Schema ({
     },
     preferredBusStop : {
         type:String
+    },
+    emailVerified : {
+        type:Boolean,
+        required:true,
+    },
+    otp : {
+        type : Number
+    },
+    otpValidUntil : {
+        type : Number
     }
 },
     { 
