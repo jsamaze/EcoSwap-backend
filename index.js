@@ -32,6 +32,9 @@ import CreateListedItem from './routes/ListedItem/CreateListedItem.js';
 import ReadListedItem from './routes/ListedItem/ReadListedItem.js';
 import { BusStopModel } from './model/index.js';
 import poplateBusStop from './helper/poplateBusStop.js';
+import DeleteListedItem from './routes/ListedItem/DeleteListedItem.js';
+import UpdateListedItem from './routes/ListedItem/UpdateListedItem.js';
+import InsertListedItemPhoto from './routes/ListedItemPhoto/InsertListedItemPhoto';
 
 // access the cert
 const key = fs.readFileSync('./HTTPS/key.pem');
@@ -119,7 +122,12 @@ server.listen(process.env.PORT,() => {
 
 // the routes the server have
 
-app.get("/test",NeedAuthenticate,(req,res)=> {
+app.get("/test/testi",(req,res)=> {
+  console.log(req.originalUrl)
+  let item = req.originalUrl.split("/");
+  console.log(item)
+  item = item[1];
+  console.log(item)
   res.send()
 })
 app.post("/test",NeedAuthenticate,(req,res)=> {
@@ -149,10 +157,8 @@ app.get("/user/photo/:username", fetchUserPhoto)
 //C. Listed Item - one (CRUD)
 app.post("/listedItem",NeedAuthenticate,CreateListedItem)
 app.get("/listedItem/:id",NeedAuthenticate,ReadListedItem)
-
-//insert logic to count number of views
-// app.get("/ListedItem",NeedAuthenticate,)
-// app.post("/ListedItem",NeedAuthenticate,)
+app.delete("/listedItem/:id",NeedAuthenticate,DeleteListedItem)
+app.patch("/listedItem/:id",NeedAuthenticate,UpdateListedItem)
 
 //D. Listed Item - multiple (R)
 // preview
@@ -160,7 +166,7 @@ app.get("/listedItem/:id",NeedAuthenticate,ReadListedItem)
 // search
 
 //E. Listed Item Photo (CRUD)
-
+app.post("/listedItem/photo/:id",NeedAuthenticate,InsertListedItemPhoto)
 
 
 // --- not sure ---
@@ -168,9 +174,12 @@ app.get("/listedItem/:id",NeedAuthenticate,ReadListedItem)
 //F. WishlistItem - one (CRUD)
 
 //G. Map API
+//consider populating regularly
+
+
 app.get("/busStop/populate",async (req,res)=>{
   try {
-    await poplateBusStop()
+    await populateBusStop()
     res.send({
       status:"successful"
     })

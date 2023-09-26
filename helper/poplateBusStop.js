@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { BusStopModel } from '../model/index.js';
 export default async () => {
+    await BusStopModel.deleteMany({})
 
     var response = null
     var busStop=null

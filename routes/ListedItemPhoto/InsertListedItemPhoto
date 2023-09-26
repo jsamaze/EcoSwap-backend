@@ -1,9 +1,18 @@
-import { UserModel } from "../../model/index.js";
+import { ListedItemModel } from "../../model/index.js";
 import AWS from 'aws-sdk';
 
 export default  async (req,res,next) => {
 
     let item = req.originalUrl.split("/")[1];
+    try {
+        await checkListedItemOwnership(req.session.username,req.params.id)
+    } catch (e){
+        res.status(400).send({
+            "status":"Bad request",
+            "problem": e.message
+        })
+        return;
+    }
 
     const s3 = new AWS.S3();
     var params = {
@@ -24,7 +33,7 @@ export default  async (req,res,next) => {
         })
     }
     try {
-        var user = await UserModel.findOne({ username: req.session.username });
+        var user = await ListedItemModel.findOne({ username: req.session.username });
 
         var oldPhotoName = user.photoName;
         user.photoName = params.Key;

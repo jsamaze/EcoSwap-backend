@@ -45,9 +45,6 @@ export let ListedItemSchema = new Schema ({
             message: 'you cannot have more than 5 pictures'
           }
     },
-    fulfilled_on : {
-        type : Date
-    },
     views : {
         type: Number,
         default:0

@@ -1,15 +1,26 @@
 # EcoSwap - Backend
 
-To-do
-- [x] Test radius API 
-- [ ] Set up cron job
-- [ ] Complete ListedItem API
+## To-do
+- [X] Complete ListedItem API
 - [ ] Complete ListedItem Pictures API
+  
+__easy just repeat__
 - [ ] Complete WishList API (single)
-- [ ] Complete ListedItem Search
-- [ ] Complete algorithm
+- [ ] Complete WishList Pictures API
+
+__create js webpage__
 - [ ] Fake data up
 
+__use atlas search__
+- [ ] Complete ListedItem Search
+
+__use radius search__
+- [ ] Complete algorithm
+
+## Pending
+- [ ] Set up cron job
+
+---
 Provides core technical functions for the project
 - CRUD operations as REST API (MongoDB and Amazon S3 backed)
 - Server for Socket Realtime chatting / live view count
@@ -30,23 +41,30 @@ Used MongoDB - ID and timestamp automatically generated
 
 ### Listed Item Relation 
 
-| field | `itemName` | `user` | `description` | `category` | `condition` | `photoName`| `views`| `tags`| `given_on`|
+| field | `itemName` | `user` | `description` | `category` | `condition` | `photoName`| `views`| `tags`| ~~`given_on`~~|
 |:------:|:--------:|:--------:|:--------:|:--------:|:--------:|:-----:|:-----:|:-:|:-:|
 | type | String | UserId | String | 'Electronics' 'Fashion', 'Furniture' 'Kitchenware' | 'new' 'old'| String array -  maximum 5 | Number | String array | Date
 required | yes | yes | no | yes | yes | no |yes| no| no
 
 **none are required to be unique - up to user to not have duplicate listing**
 
+note the last column is now part of an inherited schema
+
+---
+
 For a view by a user to count, 5 minutes must have elapsed since last viewing
 
 >For example, user see item at 1200hrs and the duration between views is set to 5 minutes. Any view between 1200hrs-1205hrs is not counted. Once a user views at 1205hrs or beyond, their views 5 minutes from that time is not counted
+---
 
 ### Wish List Item Relation 
 
-| field | `itemName` | `user` | `description` | `category` | `condition` | `tags`|`photoName`|`fulfilled_on`|
+| field | `itemName` | `user` | `description` | `category` | `condition` | `tags`|`photoName`|~~`fulfilled_on`~~|
 |:------:|:--------:|:--------:|:--------:|:--------:|:--------:|:-----:|:-----:|:-:|
 | type | String | UserId | String | 'Electronics' 'Fashion', 'Furniture' 'Kitchenware' |  'new' 'old'| String array|String array -  maximum 5 | Date |
 required | yes | yes | no | no | no | no | no|no |
+
+note the last column is now part of an inherited schema
 
 none are required to be unique - up to user to not have duplicate listing
 
@@ -424,9 +442,9 @@ POST /listedItem/
 | `description`  | String |    No    |  -  |
 | `category`  | String |    Yes    |  -  |
 | `condition` | String | Yes|  |
-| `tags` | Array of Strings | No | - 
+| `tags` | Array of Strings | No | - |
 
-### Body
+
 ```json
 {
     "itemName" : "Microwave oven",
@@ -437,7 +455,7 @@ POST /listedItem/
 }
 ```
 
-## 1b. CREATE - picture :lock: :key:
+## 1b. CREATE - add picture :lock: :key:
 ```http 
 POST /listedItem/photo/:itemid
 ```
@@ -445,6 +463,23 @@ POST /listedItem/photo/:itemid
 ## 2. UPDATE  :lock: :key:
 ```api 
 UPDATE /listedItem/:itemid
+```
+|  Attribute  |  Type  | Required | Description |
+| :---------: | :----: | :------: | :---------: |
+| `itemName`  | String |    Yes    |  Don't need to be unique  |
+| `description`  | String |    No    |  -  |
+| `category`  | String |    Yes    |  -  |
+| `condition` | String | Yes|  - |
+| `tags` | Array of Strings| If a string consider array of length 1 | No | - |
+
+```json
+{
+    "itemName" : "Microwave oven",
+    "description" : "Pre-used oven",
+    "category" : "Electronics",
+    "condition" : "old",
+    "tags": ["Sony", "popcorn", "white"],
+}
 ```
 ## 3. READ  :lock: :key: - limited for non-auth
 ```api 

@@ -20,6 +20,7 @@ export default  async (req,res,next) => {
             status : "failed retrieving item",
             problem : e.message
         })
+        return;
     }
     try {
         //additional logic to count people
