@@ -1,4 +1,5 @@
 import { Schema } from "mongoose";
+import {s3} from '../global/S3.js'
 
 export let ListedItemSchema = new Schema ({
     itemName : {
@@ -53,14 +54,18 @@ export let ListedItemSchema = new Schema ({
 {
     methods:{
         async getImageURLs(){
-            var result = await Promise.all(
-                this.photoName.map(async photoName=>{
-                    return await s3.getSignedUrl('getObject',{
-                        Bucket:"ecoswap",
-                        Key:this.photoName
+            var result = []
+            if (this.photoName){
+                result = await Promise.all(
+                    this.toObject().photoName.map(async photoName=>{
+                        return await s3.getSignedUrl('getObject',{
+                            Bucket:"ecoswap",
+                            Key:photoName
+                        })
                     })
-                })
-            ) 
+                ) 
+            } 
+
             return result
             }
         },

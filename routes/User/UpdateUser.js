@@ -6,7 +6,7 @@ const approvedAttributes = ["fullName", "preferredBusStop","about","email"]
 export default  async (req,res,next) => {
     try {
 
-        if (!req.body && Object.keys(req.body).length!=0){ //if body not empty
+        if (req.body && Object.keys(req.body).length>0){ //if body not empty
             Object.keys(req.body).forEach(key => {
                 if (! approvedAttributes.includes(key)){
                     res.status(400).send({

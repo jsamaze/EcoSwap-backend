@@ -1,11 +1,10 @@
 import { UserModel } from "../../model/index.js";
-import AWS from 'aws-sdk';
+import {s3} from '../../global/S3.js'
 
 export default  async (req,res,next) => {
 
     let item = req.originalUrl.split("/")[1];
 
-    const s3 = new AWS.S3();
     var params = {
         Bucket: 'ecoswap',
         Key: item +Date.now() + '-' + req.session.user_id+".png",

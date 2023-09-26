@@ -1,11 +1,15 @@
-import { ListedItemModel } from "../../model/index.js";
-import AWS from 'aws-sdk';
+import {s3} from '../../global/S3.js'
+import checkListedItemOwnership from '../../helper/checkListedItemOwnership.js';
 
 export default  async (req,res,next) => {
 
-    let item = req.originalUrl.split("/")[1];
+    let fileSuffix = req.originalUrl.split("/")[1];
+
     try {
-        await checkListedItemOwnership(req.session.username,req.params.id)
+        var  item=await checkListedItemOwnership(req.session.username,req.params.id);
+        if (item.photoName.length==5){
+            throw new Error("Maximum 5 photos for one project")
+        }
     } catch (e){
         res.status(400).send({
             "status":"Bad request",
@@ -14,10 +18,9 @@ export default  async (req,res,next) => {
         return;
     }
 
-    const s3 = new AWS.S3();
     var params = {
         Bucket: 'ecoswap',
-        Key: item +Date.now() + '-' + req.session.user_id+".png",
+        Key: fileSuffix +Date.now() + '-' + req.session.user_id+".png",
         Body: req.file.buffer,
       };
     
@@ -33,35 +36,13 @@ export default  async (req,res,next) => {
         })
     }
     try {
-        var user = await ListedItemModel.findOne({ username: req.session.username });
+        item.photoName.push(params.Key);
 
-        var oldPhotoName = user.photoName;
-        user.photoName = params.Key;
-
-        await user.save();
-
-        if(oldPhotoName && oldPhotoName.length > 0){
-            params = {
-                Bucket: 'ecoswap',
-                Key: oldPhotoName,
-            }
-            s3.deleteObject(params, (e,data)=>{
-                if (e){
-                    console.log(e)
-                    res.status(200).send({
-                        status:"success but old photo not deleted"
-                    })
-                } else {
-                    console.log("delete cake")
-                    console.log(data)
-                }
-            })
-
-        }
+        await item.save();
 
         res.status(200).send({
             status : "success in updating photo",
-            filename : user.photoName
+            filename : params.Key
         })
  
     } catch (e){

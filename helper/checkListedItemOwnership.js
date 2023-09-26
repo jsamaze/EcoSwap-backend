@@ -10,5 +10,5 @@ export default async (username, item_id) => {
     } else if (item.user.username != username){
         throw new Error("Not your item")
     }
-
+    return item;
 }

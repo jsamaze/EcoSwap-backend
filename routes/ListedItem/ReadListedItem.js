@@ -6,7 +6,7 @@ const betweenViewDuration = 300000 //milliseconds
 export default  async (req,res,next) => {
     try {
         var item = await ListedItemModel
-            .findOne({ _id: req.params.id },"-photoName -__v")
+            .findOne({ _id: req.params.id }," -__v")
             .populate('user',"username fullname preferredBusStop");
 
         if (!item)  {
@@ -53,8 +53,20 @@ export default  async (req,res,next) => {
         console.log(e);
     }
 
-    res.status(200).send({
-        status:"success",
-        data:item
-    })
+    try {
+        var itemToSend =  item.toObject();
+        itemToSend.photoURL = await item.getImageURLs();
+        delete itemToSend.photoName
+        res.status(200).send({
+            status:"success",
+            data:itemToSend
+        })
+    } catch (e){
+        res.status(500).send({
+            status:"photo URL fetch error",
+            data:item,
+            problem:e.message
+        })
+    }
+
 }

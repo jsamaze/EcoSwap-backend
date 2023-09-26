@@ -1,11 +1,11 @@
 import { ListedItemModel } from "../../model/index.js";
+import checkListedItemOwnership from "../../helper/checkListedItemOwnership.js";
 
 const approvedAttributes = ["itemName", "description","category","condition","tags"]
 
 export default  async (req,res,next) => {
     try {
-        console.log(!req.body && Object.keys(req.body).length!=0)
-        if (!req.body && Object.keys(req.body).length!=0){
+        if (req.body && Object.keys(req.body).length>0){
             await checkListedItemOwnership(req.session.username,req.params.id)
             Object.keys(req.body).forEach(key => {
                 if (! approvedAttributes.includes(key)){

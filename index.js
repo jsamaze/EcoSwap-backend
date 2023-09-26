@@ -18,7 +18,6 @@ import Login from "./routes/User/Login.js";
 
 import NeedAuthenticate from "./custom_middleware/NeedAuth.js";
 import AlreadyAuthenticate from './custom_middleware/AlwaysAuth.js';
-import populateBusStop from "./helper/poplateBusStop.js"
 
 import insertUserPhoto from './routes/UserPhoto/insertUserPhoto.js';
 import fetchUserPhoto from './routes/UserPhoto/fetchUserPhoto.js';
@@ -27,14 +26,15 @@ import ConfirmEmail from './routes/User/ConfirmEmail.js';
 import ConfirmPassword from './routes/User/ConfirmPassword.js';
 import FetchUser from './routes/User/FetchUser.js';
 import UpdateUser from './routes/User/UpdateUser.js';
-import NeedAuth from './custom_middleware/NeedAuth.js';
 import CreateListedItem from './routes/ListedItem/CreateListedItem.js';
 import ReadListedItem from './routes/ListedItem/ReadListedItem.js';
+
 import { BusStopModel } from './model/index.js';
-import poplateBusStop from './helper/poplateBusStop.js';
+import populateBusStop from './helper/populateBusStop.js';
 import DeleteListedItem from './routes/ListedItem/DeleteListedItem.js';
 import UpdateListedItem from './routes/ListedItem/UpdateListedItem.js';
-import InsertListedItemPhoto from './routes/ListedItemPhoto/InsertListedItemPhoto';
+import InsertListedItemPhoto from './routes/ListedItemPhoto/InsertListedItemPhoto.js';
+import DeleteListedItemPhoto from './routes/ListedItemPhoto/DeleteListedItemPhoto.js';
 
 // access the cert
 const key = fs.readFileSync('./HTTPS/key.pem');
@@ -146,13 +146,12 @@ app.get('/user/generateOTP',NeedAuthenticate,(req,res)=>{
 })
 app.post('/user/confirmPassword',NeedAuthenticate,ConfirmPassword)
 
-app.get('/user/:username',NeedAuthenticate,FetchUser)
+app.get('/user/:username',FetchUser)
 app.patch('/user/',NeedAuthenticate,UpdateUser)
 
 //B. User Photo
 app.post("/user/photo", NeedAuthenticate , upload.single("userPhoto"), insertUserPhoto)
-app.get("/user/photo/:username", fetchUserPhoto)
-// missing :  delete photo
+// app.get("/user/photo/:username", fetchUserPhoto)
 
 //C. Listed Item - one (CRUD)
 app.post("/listedItem",NeedAuthenticate,CreateListedItem)
@@ -166,17 +165,15 @@ app.patch("/listedItem/:id",NeedAuthenticate,UpdateListedItem)
 // search
 
 //E. Listed Item Photo (CRUD)
-app.post("/listedItem/photo/:id",NeedAuthenticate,InsertListedItemPhoto)
-
+app.post("/listedItem/photo/:id",NeedAuthenticate,upload.single("itemPhoto"),InsertListedItemPhoto)
+app.delete("/listedItem/photo/:id",NeedAuthenticate,DeleteListedItemPhoto)
 
 // --- not sure ---
 //for now the below one is merely a copy
 //F. WishlistItem - one (CRUD)
 
 //G. Map API
-//consider populating regularly
-
-
+//consider populating regularly using cron
 app.get("/busStop/populate",async (req,res)=>{
   try {
     await populateBusStop()

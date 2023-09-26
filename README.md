@@ -2,7 +2,7 @@
 
 ## To-do
 - [X] Complete ListedItem API
-- [ ] Complete ListedItem Pictures API
+- [X] Complete ListedItem Pictures API
   
 __easy just repeat__
 - [ ] Complete WishList API (single)
@@ -11,7 +11,7 @@ __easy just repeat__
 __create js webpage__
 - [ ] Fake data up
 
-__use atlas search__
+__use atlas search aggregation pipeline__ 
 - [ ] Complete ListedItem Search
 
 __use radius search__
@@ -299,7 +299,7 @@ POST /user/confirmPassword
 
 ## 8. User Info
 ```api
-POST /user/:userid
+GET /user/:userid
 ```
 :up: replace  `:userid` with userID
 ### Response - 200 OK
@@ -309,9 +309,11 @@ POST /user/:userid
 	"fullName": "joshua",
 	"username": "joshua",
 	"email": "jsumarlin.2022@scis.smu.edu.sg",
-	"preferredBusStop": "01234"
+	"preferredBusStop": "01234",
+    "photoURL" : //s3 pre-signed URL - only valid for 15 minutes
 }
 ```
+//photoURL given if available, if not then emptry string
 
 ## 9.User Info update :lock: :key:
 ```HTTP 
@@ -410,21 +412,6 @@ The following indicate failure to update database
 }
 ```
 
-## 2. READ - Fetch User Photo
-
-```api 
-GET /user/photo/:username
-```
-:arrow_up:  replace :username with username whose photo you want to see
-
-### Response
-
-```json
-{ 
-    "status": "success",
-   "url" : //this is an S3 pre-signed url - only valid for 15 minutes
-}
-```
 
 
 ## C. ListedItems - one item
@@ -499,16 +486,29 @@ GET /listedItem/:itemid
                 "category" : "Electronics",
                 "condition" : "old",
                 "tags": ["Sony", "popcorn", "white"],
-                "photoUrl" : ["url1","url2",...]
+                "photoUrl" : ["url1","url2",...] //s3 presigned URL only valid for 15 minutes
             }
 }
 ```
-
 ***Important*** - counts the number of user that sees it
+
 ## 4. DELETE  :lock: :key: 
 ```api 
 DELETE /listedItem/:itemid
 ```
+
+## 5. CREATE - Insert phot :lock: :key:
+``` api
+POST /listedItem/photo/:itemid
+```
+
+## 6. DELETE - Delee photo :lock: :key:
+``` api
+DELETE /listedItem/photo/:itemid?index=2
+```
+
+
+
 ## D. Listed Items - many items
 
 ## 1. See trending items

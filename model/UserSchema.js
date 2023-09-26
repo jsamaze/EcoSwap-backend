@@ -63,11 +63,14 @@ let UserSchema = new Schema ({
                 })
             },
         async getImageURL (){
-                console.log(this.photoName)
-                var url = await s3.getSignedUrl('getObject',{
-                    Bucket:"ecoswap",
-                    Key:this.photoName
-                })
+                var url = ""
+                if (this.photoName){
+                    url = await s3.getSignedUrl('getObject',{
+                        Bucket:"ecoswap",
+                        Key:this.photoName
+                    })
+                }
+
                 return url
 
 
