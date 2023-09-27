@@ -61,8 +61,7 @@ export default  async (req,res,next) => {
             if (err){
                 res.status(500).send({
                     status : "error with database update, photo not deleted from database",
-                    problem1 : e.message,
-                    problem2 : err.message
+                    problem : [e.message,err.message]
                 })
             } else {
                 res.status(500).send({

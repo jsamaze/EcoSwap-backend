@@ -137,7 +137,6 @@ app.post("/test",NeedAuthenticate,(req,res)=> {
 app.post("/user/register", Register)
 app.post("/user/login", AlreadyAuthenticate,Login)
 app.get('/user/logout',NeedAuthenticate, Logout)
-app.post("/user/confirmEmail",NeedAuthenticate,ConfirmEmail)
 app.get('/user/generateOTP',NeedAuthenticate,(req,res)=>{
   generateOTP(req.session.username)
   res.send({
@@ -145,6 +144,7 @@ app.get('/user/generateOTP',NeedAuthenticate,(req,res)=>{
   })
 })
 app.post('/user/confirmPassword',NeedAuthenticate,ConfirmPassword)
+app.post("/user/confirmEmail",NeedAuthenticate,ConfirmEmail)
 
 app.get('/user/:username',FetchUser)
 app.patch('/user/',NeedAuthenticate,UpdateUser)

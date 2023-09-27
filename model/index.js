@@ -13,6 +13,6 @@ export let ChatModel = model("chat", ChatSchema);
 export let ViewModel = model("view", ViewSchema);
 export let BusStopModel = model("busStop",BusStopSchema);
 export let DoneListedItemModel = ListedItemModel.discriminator("doneListedItem",
-    new Schema({doneOn : Date}))
+    new Schema({}))
 export let DoneWishListItemModel = ListedItemModel.discriminator("doneWishListItem",
     new Schema({doneOn : Date}))
