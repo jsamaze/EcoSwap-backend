@@ -20,21 +20,21 @@ import NeedAuthenticate from "./custom_middleware/NeedAuth.js";
 import AlreadyAuthenticate from './custom_middleware/AlwaysAuth.js';
 
 import insertUserPhoto from './routes/UserPhoto/insertUserPhoto.js';
-import fetchUserPhoto from './routes/UserPhoto/fetchUserPhoto.js';
+
 import generateOTP from './helper/generateOTP.js';
 import ConfirmEmail from './routes/User/ConfirmEmail.js';
 import ConfirmPassword from './routes/User/ConfirmPassword.js';
 import FetchUser from './routes/User/FetchUser.js';
 import UpdateUser from './routes/User/UpdateUser.js';
-import CreateListedItem from './routes/ListedItem/CreateListedItem.js';
-import ReadListedItem from './routes/ListedItem/ReadListedItem.js';
 
-import { BusStopModel } from './model/index.js';
 import populateBusStop from './helper/populateBusStop.js';
-import DeleteListedItem from './routes/ListedItem/DeleteListedItem.js';
-import UpdateListedItem from './routes/ListedItem/UpdateListedItem.js';
-import InsertListedItemPhoto from './routes/ListedItemPhoto/InsertListedItemPhoto.js';
-import DeleteListedItemPhoto from './routes/ListedItemPhoto/DeleteListedItemPhoto.js';
+import CreateItem from './routes/Item/CreateItem.js';
+import ReadItem from './routes/Item/ReadItem.js';
+import DeleteItem from './routes/Item/DeleteItem.js';
+import UpdateItem from './routes/Item/UpdateItem.js';
+import InsertItemPhoto from './routes/ItemPhoto/InsertItemPhoto.js';
+import DeleteItemPhoto from './routes/ItemPhoto/DeleteItemPhoto.js';
+
 
 // access the cert
 const key = fs.readFileSync('./HTTPS/key.pem');
@@ -78,9 +78,9 @@ var sessionMiddleware= session({
   unset:"destroy",
 })
 app.use(sessionMiddleware);
-//let socket use that
-io.engine.use(sessionMiddleware);
 
+//let socket use session
+io.engine.use(sessionMiddleware);
 
 // configure middleware
 app.use(express.json());
@@ -90,24 +90,19 @@ app.use(cors({
   exposedHeaders: ['set-cookie']
 }));
 
-
 //configure multer - to store files
-
 const upload = multer({ 
   storage: multer.memoryStorage(),
   limits: {
     fileSize: 5 * 1024 * 1024, // limit file size to 5MB
-  }, });
-
-
+  }, 
+});
 
 // configure mongoose
 async function main() {
   await mongoose.connect(process.env.MONGODB_CONNECTION);
 }
-
 main().catch(err => console.log(err));
-
 mongoose.connection.on("connected", () => {
   console.log("Connected to database");
 });
@@ -122,17 +117,6 @@ server.listen(process.env.PORT,() => {
 
 // the routes the server have
 
-app.get("/test/testi",(req,res)=> {
-  console.log(req.originalUrl)
-  let item = req.originalUrl.split("/");
-  console.log(item)
-  item = item[1];
-  console.log(item)
-  res.send()
-})
-app.post("/test",NeedAuthenticate,(req,res)=> {
-  res.send()
-})
 //A. User
 app.post("/user/register", Register)
 app.post("/user/login", AlreadyAuthenticate,Login)
@@ -154,25 +138,20 @@ app.post("/user/photo", NeedAuthenticate , upload.single("userPhoto"), insertUse
 // app.get("/user/photo/:username", fetchUserPhoto)
 
 //C. Listed Item - one (CRUD)
-app.post("/listedItem",NeedAuthenticate,CreateListedItem)
-app.get("/listedItem/:id",NeedAuthenticate,ReadListedItem)
-app.delete("/listedItem/:id",NeedAuthenticate,DeleteListedItem)
-app.patch("/listedItem/:id",NeedAuthenticate,UpdateListedItem)
+app.post("/item",NeedAuthenticate,CreateItem)
+app.get("/item/:id",NeedAuthenticate,ReadItem)
+app.delete("/item/:id",NeedAuthenticate,DeleteItem)
+app.patch("/item/:id",NeedAuthenticate,UpdateItem)
 
 //D. Listed Item - multiple (R)
-// preview
-// trending
-// search
+//search by user, tags
 
 //E. Listed Item Photo (CRUD)
-app.post("/listedItem/photo/:id",NeedAuthenticate,upload.single("itemPhoto"),InsertListedItemPhoto)
-app.delete("/listedItem/photo/:id",NeedAuthenticate,DeleteListedItemPhoto)
+app.post("/listedItem/photo/:id",NeedAuthenticate,upload.single("itemPhoto"),InsertItemPhoto)
+app.delete("/listedItem/photo/:id",NeedAuthenticate,DeleteItemPhoto)
 
-// --- not sure ---
-//for now the below one is merely a copy
-//F. WishlistItem - one (CRUD)
 
-//G. Map API
+//F. Map API
 //consider populating regularly using cron
 app.get("/busStop/populate",async (req,res)=>{
   try {

@@ -1,12 +1,12 @@
 import {s3} from '../../global/S3.js'
-import checkListedItemOwnership from '../../helper/checkListedItemOwnership.js';
+import checkItemOwnership from '../../helper/checkItemOwnership.js';
 
 export default  async (req,res,next) => {
 
     let fileSuffix = req.originalUrl.split("/")[1];
 
     try {
-        var  item=await checkListedItemOwnership(req.session.username,req.params.id);
+        var  item=await checkItemOwnership(req.session.username,req.params.id);
         if (item.photoName.length==5){
             throw new Error("Maximum 5 photos for one project")
         }

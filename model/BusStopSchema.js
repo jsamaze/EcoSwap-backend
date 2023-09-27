@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-
+//based on LTA Data Mall
 export let BusStopSchema = new Schema({
     "BusStopCode": {
         type:String,

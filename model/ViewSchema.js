@@ -12,7 +12,8 @@ export let ViewSchema = new Schema ({
         required : true,
     },
     lastSeen : {
-        type: Number,
-        required:true
+        type: Date,
+        required:true,
+        default : Date.now
     }
 })

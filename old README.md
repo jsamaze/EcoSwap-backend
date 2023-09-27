@@ -4,9 +4,6 @@
 - [X] Complete ListedItem API
 - [X] Complete ListedItem Pictures API
   
-__easy just repeat__
-- [ ] Complete WishList API (single)
-- [ ] Complete WishList Pictures API
 
 __create js webpage__
 - [ ] Fake data up

@@ -1,9 +1,7 @@
 import {s3} from '../../global/S3.js'
-import checkListedItemOwnership from '../../helper/checkListedItemOwnership.js';
+import checkItemOwnership from '../../helper/checkItemOwnership.js';
 
 export default  async (req,res,next) => {
-    console.log(req.query.index)
-    console.log(req.params.id)
     if (!(req.query.index && req.query.index > -1 && req.query.index <5)){
         res.status(400).send({
             status:"Invalid query parameters"
@@ -12,9 +10,9 @@ export default  async (req,res,next) => {
     }
 
     try {
-        var item = await checkListedItemOwnership(req.session.username,req.params.id)
+        var item = await checkItemOwnership(req.session.username,req.params.id)
         if (!item.photoName[req.query.index]){
-            throw Error("Index invalid because empty")
+            throw Error("Index invalid because no item is found at that index")
         }
     } catch (e) {
         res.status(500).send({

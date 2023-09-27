@@ -1,7 +1,7 @@
-import { ListedItemModel } from "../model/index.js";
+import { ItemModel } from "../model/index.js";
 
 export default async (username, item_id) => {
-    var item = await ListedItemModel
+    var item = await ItemModel
     .findOne({ _id: item_id })
     .populate('user',"username");
 

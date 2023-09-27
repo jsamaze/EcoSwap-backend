@@ -1,7 +1,15 @@
 import { Schema } from "mongoose";
- 
+import {s3} from '../global/S3.js'
 
-export let WishlistItemSchema = new Schema ({
+export let ItemSchema = new Schema ({
+    itemType : {
+        type : String,
+        required: true,
+        enum : {
+            values: ["Listed", "WishList"],
+            message : "Invalid type"
+        }
+    },
     itemName : {
         type : String,
         trim: true,
@@ -46,10 +54,32 @@ export let WishlistItemSchema = new Schema ({
             message: 'you cannot have more than 5 pictures'
           }
     },
-    
-
+    views : {
+        type: Number,
+        default:0
+    },
+    done : {
+        type : Date,
+    }
 },
 {
+    methods:{
+        async getImageURLs(){
+            var result = []
+            if (this.photoName){
+                result = await Promise.all(
+                    this.toObject().photoName.map(async photoName=>{
+                        return await s3.getSignedUrl('getObject',{
+                            Bucket:"ecoswap",
+                            Key:photoName
+                        })
+                    })
+                ) 
+            } 
+
+            return result
+            }
+        },
     timestamps:true
 })
 

@@ -1,11 +1,9 @@
-//Yet to implement imageURL
-
-import { ListedItemModel, ViewModel } from "../../model/index.js";
+import { ItemModel, ViewModel } from "../../model/index.js";
 
 const betweenViewDuration = 300000 //milliseconds
 export default  async (req,res,next) => {
     try {
-        var item = await ListedItemModel
+        var item = await ItemModel
             .findOne({ _id: req.params.id }," -__v")
             .populate('user',"username fullname preferredBusStop");
 
@@ -32,7 +30,7 @@ export default  async (req,res,next) => {
 
         if (view) {
             // a view entry exists
-            if (view.lastSeen+betweenViewDuration <= Date.now()){
+            if (view.lastSeen.getTime()+betweenViewDuration <= Date.now()){
                 item.views++
                 view.lastSeen=Date.now();
             }
@@ -41,7 +39,6 @@ export default  async (req,res,next) => {
             view = new ViewModel({
                 user: req.session.user_id,
                 item : req.params.id,
-                lastSeen : Date.now(),
             })
             item.views++
         }
@@ -64,7 +61,7 @@ export default  async (req,res,next) => {
     } catch (e){
         res.status(500).send({
             status:"photo URL fetch error",
-            data:item,
+            data:item, //even if photo fetch error still return smth
             problem:e.message
         })
     }

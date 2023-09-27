@@ -51,7 +51,7 @@ let UserSchema = new Schema ({
         trim:true,
     },
     otpValidUntil : {
-        type : Number
+        type : Date
     }
 },
     { 
@@ -72,10 +72,13 @@ let UserSchema = new Schema ({
                 }
 
                 return url
-
-
-        }
+            },
+        checkOTP(otp){
+            return this.otp == otp && this.otpValidUntil <= Date.now()
         },
+        
+        },
+
         timestamps:true
 })
 

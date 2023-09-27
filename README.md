@@ -2,11 +2,10 @@
 
 # REST API
 
-[Video on the subject](https://youtu.be/-MTSQjw5DrM?si=2oWyxqk7njAVh_sH)
+[See this video for introduction](https://youtu.be/-MTSQjw5DrM?si=2oWyxqk7njAVh_sH)
 
 **IMPORTANT**
-- unless otherwise specified, no JSON body is required
-- output only shown for READ endpoints
+- output only shown for GET endpoints
 - after login, the server will be able to know who made the request. No additional code needed in axios. If you want to know how, see [this](https://youtu.be/UBUNrFtufWo?si=MnWYYKEAxgpF2wmd
 ) video on cookie (we did not use JWT)
 
@@ -102,7 +101,7 @@ All the type are String
 |:question:| optional|
 | :x: | don't include for `PATCH` /ignored elsewhere|
 
-| Path | `fullName` | `username` | `email` | `password` |  `otp`|  `preferredBusStop`  |  `about` |
+| Path | `fullName` | `username` | `email` | `password` |  `otp`|  `preferredBusStop`<br> e.g. 01234  |  `about` |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 `/user/register` | :heavy_check_mark: |:heavy_check_mark: |:heavy_check_mark: |:heavy_check_mark: | :x:| :x: | :x:|
 `/user/login`| :x: |:heavy_check_mark: |:x: |:heavy_check_mark: | :x:| :x: | :x:|
@@ -121,6 +120,12 @@ All the type are String
     "photoURL" : //s3 pre-signed URL - only valid for 15 minutes
 }
 ```
+### Special Case - Photos
+- please see frontend for help in using axios to send data
+
+| METHOD | Purpose |  Path | Need login |
+| :-:| :-:| :-:|:-:|
+| `POST` |Set own user photo and delete old one (if any) <br> <br> uses `multipart/form-data` in `name=userPhoto` |`/user`   | Yes |
 
 
 ## B. Item API Endpoints

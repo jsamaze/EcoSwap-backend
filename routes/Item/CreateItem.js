@@ -1,9 +1,16 @@
-import { ListedItemModel } from "../../model/index.js";;
+import { ItemModel } from "../../model";
 
 export default async (req,res) => {
     try {
+        
+        if(!req.query.type && ["Listed", "WishList"].includes(req.query.type)){ // ?type=
+            res.status(400).send({
+                status:"Missing query parameter"
+            })
+            return;
+        }        
 
-        const item = new ListedItemModel({
+        const item = new ItemModel({
             "itemName" : req.body.itemName,
             "description" : req.body.description,
             "category" : req.body.category,
@@ -11,6 +18,7 @@ export default async (req,res) => {
             "tags": req.body.tags,
             "user" : req.session.user_id,
             "view" : 0,
+            "itemType" : req.query.type
         });
 
         await item.save();

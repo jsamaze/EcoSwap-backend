@@ -1,29 +1,38 @@
 import { Schema } from "mongoose";
+import { messageSchema } from "./MessageSchema"
 
 export let ChatSchema = new Schema ({
     seller : {
-        type : 'ObjectId',
-        ref : 'user',
-        required : true,
-    },
-    buyer : {
-        type : 'ObjectId',
-        ref : 'user',
-        required : true,
-    },
-    messages : [{
-        sender : {
+        user : {  
             type : 'ObjectId',
             ref : 'user',
             required : true,
         },
-        message : {
-            type : String, 
-            required : true
+        items : {
+            type: ['ObjectId'], // not going to record when it was added
+            ref: 'item'
+        }
+    },
+    buyer : {
+        user : {  
+            type : 'ObjectId',
+            ref : 'user',
+            required : true,
         },
-    }],
-    closed : {
-        type:String
+        items : {
+            type: ['ObjectId'], // not going to record when it was added
+            ref: 'item'
+        }
+    }, //person starting
+    messages : [messageSchema],
+    closedOn : {
+        type:Date,
+        // validate: {
+        //     validator : function (v){
+        //         return v.getTime() > this.createdAt()
+        //     },
+        //     message: "You can only close a chat after it is created"
+        // }
     }
 },
 {

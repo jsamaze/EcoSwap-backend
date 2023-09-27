@@ -1,12 +1,12 @@
-import { ListedItemModel } from "../../model/index.js";
-import checkListedItemOwnership from "../../helper/checkListedItemOwnership.js";
+import { ItemModel } from "../../model/index.js";
+import checkItemOwnership from "../../helper/checkListedItemOwnership.js";
 
-const approvedAttributes = ["itemName", "description","category","condition","tags"]
+const approvedAttributes = ["itemName", "description","category","condition","tags"]  //not allowed change item type
 
 export default  async (req,res,next) => {
     try {
         if (req.body && Object.keys(req.body).length>0){
-            await checkListedItemOwnership(req.session.username,req.params.id)
+            await checkItemOwnership(req.session.username,req.params.id)
             Object.keys(req.body).forEach(key => {
                 if (! approvedAttributes.includes(key)){
                     res.status(400).send({

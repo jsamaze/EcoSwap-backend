@@ -1,14 +1,13 @@
-//Yet to implement imageURL
-
-import checkListedItemOwnership from "../../helper/checkListedItemOwnership.js";
-import { ListedItemModel, ViewModel } from "../../model/index.js";
+import checkItemOwnership from "../../helper/checkItemOwnership.js";
+import { ItemModel } from "../../model/index.js";
 
 const betweenViewDuration = 300000 //milliseconds
+
 export default  async (req,res,next) => {
     try {
-        await checkListedItemOwnership(req.session.username,req.params.id)
+        await checkItemOwnership(req.session.username,req.params.id)
 
-        await ListedItemModel
+        await ItemModel
             .deleteOne({ _id: req.params.id })
 
 

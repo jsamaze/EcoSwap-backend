@@ -4,7 +4,7 @@ export default async (req,res) => {
     try {
         var user = await UserModel.findOne({ username: req.session.username });
 
-        if (user.otp && user.otp === req.body.otp && Date.now() <= user.otpValidUntil){
+        if (user.checkOTP(req.body.otp)){
             user.otp=undefined
             user.password=req.body.password
             user.otpValidUntil=undefined
