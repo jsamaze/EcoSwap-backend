@@ -120,7 +120,7 @@ server.listen(process.env.PORT,() => {
 //A. User
 app.post("/user/register", Register)
 app.post("/user/login", AlreadyAuthenticate,Login)
-app.get('/user/logout',NeedAuthenticate, Logout)
+app.get('/user/logout',NeedAuthenticate, Logout)l
 app.get('/user/generateOTP',NeedAuthenticate,(req,res)=>{
   generateOTP(req.session.username)
   res.send({
