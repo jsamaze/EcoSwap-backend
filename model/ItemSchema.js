@@ -49,6 +49,7 @@ export let ItemSchema = new Schema ({
     photoName : {
         type:[String],
         trim:true,
+        required:true,
         validate: {
             validator: (pictures) => pictures.length <=5,
             message: 'you cannot have more than 5 pictures'

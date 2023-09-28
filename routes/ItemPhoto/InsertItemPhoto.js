@@ -8,7 +8,7 @@ export default  async (req,res,next) => {
     try {
         var  item=await checkItemOwnership(req.session.username,req.params.id);
         if (item.photoName.length==5){
-            throw new Error("Maximum 5 photos for one project")
+            throw new Error("Maximum 5 photos for one item")
         }
     } catch (e){
         res.status(400).send({

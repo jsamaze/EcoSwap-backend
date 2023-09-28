@@ -6,7 +6,6 @@ import connect_mongodb_session from 'connect-mongodb-session';
 import 'dotenv/config';
 import multer from 'multer';
 import fs from 'fs';
-import path from 'path';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import { Server } from 'socket.io';
@@ -28,13 +27,13 @@ import FetchUser from './routes/User/FetchUser.js';
 import UpdateUser from './routes/User/UpdateUser.js';
 
 import populateBusStop from './helper/populateBusStop.js';
+
 import CreateItem from './routes/Item/CreateItem.js';
 import ReadItem from './routes/Item/ReadItem.js';
 import DeleteItem from './routes/Item/DeleteItem.js';
 import UpdateItem from './routes/Item/UpdateItem.js';
 import InsertItemPhoto from './routes/ItemPhoto/InsertItemPhoto.js';
 import DeleteItemPhoto from './routes/ItemPhoto/DeleteItemPhoto.js';
-
 
 // access the cert
 const key = fs.readFileSync('./HTTPS/key.pem');
@@ -120,7 +119,7 @@ server.listen(process.env.PORT,() => {
 //A. User
 app.post("/user/register", Register)
 app.post("/user/login", AlreadyAuthenticate,Login)
-app.get('/user/logout',NeedAuthenticate, Logout)l
+app.get('/user/logout',NeedAuthenticate, Logout)
 app.get('/user/generateOTP',NeedAuthenticate,(req,res)=>{
   generateOTP(req.session.username)
   res.send({
@@ -135,24 +134,35 @@ app.patch('/user/',NeedAuthenticate,UpdateUser)
 
 //B. User Photo
 app.post("/user/photo", NeedAuthenticate , upload.single("userPhoto"), insertUserPhoto)
-// app.get("/user/photo/:username", fetchUserPhoto)
 
 //C. Listed Item - one (CRUD)
 app.post("/item",NeedAuthenticate,CreateItem)
-app.get("/item/:id",NeedAuthenticate,ReadItem)
+app.get("/item/:id",ReadItem)
 app.delete("/item/:id",NeedAuthenticate,DeleteItem)
 app.patch("/item/:id",NeedAuthenticate,UpdateItem)
 
-//D. Listed Item - multiple (R)
+//D. Listed Item Photo (CRUD)
+app.post("/item/:id/photo",NeedAuthenticate,upload.single("itemPhoto"),InsertItemPhoto)
+app.delete("/item/:id/photo",NeedAuthenticate,DeleteItemPhoto)
+
+//E. Listed Item - multiple (R)
 //search by user, tags
-
-//E. Listed Item Photo (CRUD)
-app.post("/listedItem/photo/:id",NeedAuthenticate,upload.single("itemPhoto"),InsertItemPhoto)
-app.delete("/listedItem/photo/:id",NeedAuthenticate,DeleteItemPhoto)
-
 
 //F. Map API
 //consider populating regularly using cron
+
+// $lookup for leftjoin
+// $match for where
+// $ in to check in array or not
+
+// $group -> $push  with null id -> array combination for busstop numbers
+
+
+// given location - find nearest bus stops
+// find listings from all nearby bus stops
+// perform matching search for each item
+
+// find nearest bus stops
 app.get("/busStop/populate",async (req,res)=>{
   try {
     await populateBusStop()
@@ -182,8 +192,20 @@ app.post("/busStop/radius",async (req,res)=>{
  res.send(result)
 })
 
+// G. Chat API
 
+// exclude finished chat from belo
+//  /user/ -> user recent chats
+// https://www.mongodb.com/docs/v6.0/reference/operator/aggregation/last-array-element/
+// /user/:userId -> chat history with person (if exists)
 
+// Socket.io
+
+// sendMsg event -> receiveMsg event
+// tickItem event -> itemTicked event
+// done event -> done event
+
+// prioritise emitting before updating mongoDB
 
 
 //when the server is ended using CTRL+C

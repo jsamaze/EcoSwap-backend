@@ -1,12 +1,14 @@
+import checkItemOwnership from "../../helper/checkItemOwnership.js";
 import { ItemModel } from "../../model/index.js";
-import checkItemOwnership from "../../helper/checkListedItemOwnership.js";
 
 const approvedAttributes = ["itemName", "description","category","condition","tags"]  //not allowed change item type
 
 export default  async (req,res,next) => {
     try {
+        console.log(req.body && Object.keys(req.body).length>0);
         if (req.body && Object.keys(req.body).length>0){
             await checkItemOwnership(req.session.username,req.params.id)
+            
             Object.keys(req.body).forEach(key => {
                 if (! approvedAttributes.includes(key)){
                     res.status(400).send({
@@ -17,7 +19,7 @@ export default  async (req,res,next) => {
             });
     
             try{
-                await ListedItemModel.validate(req.body,Object.keys(req.body))
+                await ItemModel.validate(req.body,Object.keys(req.body))
             } catch(e){
                 res.status(400).send({
                     status:`Invalid input`,
@@ -26,7 +28,7 @@ export default  async (req,res,next) => {
                 return;
             }
     
-            await ListedItemModel.updateOne({_id:req.params.id},req.body)    
+            await ItemModel.updateOne({_id:req.params.id},req.body)    
         }
 
         res.status(200).send({
@@ -36,7 +38,7 @@ export default  async (req,res,next) => {
     } catch (e){
         console.log(e);
         res.status(500).send({
-            status : "failed updating ListedItem",
+            status : "failed updating Item",
             problem : e.message
         })
     }

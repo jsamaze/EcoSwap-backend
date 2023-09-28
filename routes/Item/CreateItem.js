@@ -1,4 +1,4 @@
-import { ItemModel } from "../../model";
+import { ItemModel } from "../../model/index.js";
 
 export default async (req,res) => {
     try {

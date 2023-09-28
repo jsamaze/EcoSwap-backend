@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { messageSchema } from "./MessageSchema"
+import { messageSchema } from "./MessageSchema.js"
 
 export let ChatSchema = new Schema ({
     seller : {
@@ -24,7 +24,10 @@ export let ChatSchema = new Schema ({
             ref: 'item'
         }
     }, //person starting
-    messages : [messageSchema],
+    messages : {
+        type: [messageSchema],
+        required:true,
+    },
     closedOn : {
         type:Date,
         // validate: {
