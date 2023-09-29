@@ -1,6 +1,7 @@
 import checkItemOwnership from "../../helper/checkItemOwnership.js";
 import { ItemModel } from "../../model/index.js";
 
+const betweenViewDuration = 300000 //milliseconds
 
 export default  async (req,res,next) => {
     try {

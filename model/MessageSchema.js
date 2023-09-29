@@ -9,9 +9,12 @@ export let messageSchema = new Schema({
             message : "Invalid value"
         }
     },
-    content : {
+    textContent : {
         type: String, //yeah only sending text message...let's keep it simple
         required:true,
+    },
+    pictureContent : {
+        type : String,
     }
 },{
     timestamps:true,

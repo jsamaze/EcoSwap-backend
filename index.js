@@ -34,6 +34,12 @@ import DeleteItem from './routes/Item/DeleteItem.js';
 import UpdateItem from './routes/Item/UpdateItem.js';
 import InsertItemPhoto from './routes/ItemPhoto/InsertItemPhoto.js';
 import DeleteItemPhoto from './routes/ItemPhoto/DeleteItemPhoto.js';
+import fetchOneChat from './routes/Chat/Entire Chat/fetchOneChat.js';
+import fetchChats from './routes/Chat/Entire Chat/fetchChats.js';
+import addMessage from './routes/Chat/Message/addMessage.js';
+import addItem from './routes/Chat/Items/addItem.js';
+import removeItem from './routes/Chat/Items/removeItem.js';
+import createChat from './routes/Chat/Entire Chat/createChat.js';
 
 // access the cert
 const key = fs.readFileSync('./HTTPS/key.pem');
@@ -120,8 +126,13 @@ server.listen(process.env.PORT,() => {
 app.post("/user/register", Register)
 app.post("/user/login", AlreadyAuthenticate,Login)
 app.get('/user/logout',NeedAuthenticate, Logout)
-app.get('/user/generateOTP',NeedAuthenticate,(req,res)=>{
-  generateOTP(req.session.username)
+app.get('/user/generateOTP',(req,res)=>{
+  if (!( req.session.username ?? req.query.username)){
+    res.status(400).send({
+      status : "Not logged in and not passed in the username in query"
+    })
+  }
+  generateOTP(req.session.username ?? req.query.username )
   res.send({
     status:"Success - check your email"
   })
@@ -198,6 +209,18 @@ app.post("/busStop/radius",async (req,res)=>{
 //  /user/ -> user recent chats
 // https://www.mongodb.com/docs/v6.0/reference/operator/aggregation/last-array-element/
 // /user/:userId -> chat history with person (if exists)
+
+app.get("/chat/user/:username",NeedAuthenticate,fetchOneChat) //one chats //tested
+app.get("/chat",NeedAuthenticate,fetchChats) //recent chats
+app.post("/chat/user/:username",NeedAuthenticate, createChat)  //put item in body // tested
+
+//for socket
+app.post("/chat/user/:username/message",NeedAuthenticate,addMessage) //put textContent in body
+
+app.post("/chat/user/:username/item/:itemId",NeedAuthenticate,addItem)
+app.delete("/chat/user/:username/item/:itemId",NeedAuthenticate,removeItem)
+
+// missing feature - rewards
 
 // Socket.io
 

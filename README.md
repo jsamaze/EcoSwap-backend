@@ -83,7 +83,7 @@ response = {
 | `POST` |Register - auto send OTP|`/user/register`   | No |
 | `POST` |Login|`/user/login`  | No |
 | `GET` |Logout|`/user/logout`  | Yes |
-| `GET` |generate OTP for email verification or change password|`/user/generateOTP` | Yes |
+| `GET` |generate OTP for email verification or change password|`/user/generateOTP` | No <br><br> *If not logged in, need to pass username through query* |
 | `POST` |*OTP required* - change password  |`/user/confirmPassword` | Yes |
 | `POST` |*OTP required* - confirm already registered email  |`/user/confirmEmail` | Yes |
 | `GET` |Get User Info|`/user/:username` <br> <br> replace username e.g. `/user/joshua` | No |

@@ -74,7 +74,7 @@ let UserSchema = new Schema ({
                 return url
             },
         checkOTP(otp){
-            return this.otp == otp && this.otpValidUntil <= Date.now()
+            return this.otp == otp && this.otpValidUntil.getDate() <= Date.now()
         },
         
         },

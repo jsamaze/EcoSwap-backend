@@ -2,27 +2,15 @@ import { Schema } from "mongoose";
 import { messageSchema } from "./MessageSchema.js"
 
 export let ChatSchema = new Schema ({
-    seller : {
-        user : {  
-            type : 'ObjectId',
-            ref : 'user',
-            required : true,
-        },
-        items : {
-            type: ['ObjectId'], // not going to record when it was added
-            ref: 'item'
-        }
+    seller : {  
+        type : 'ObjectId',
+        ref : 'user',
+        required : true,
     },
-    buyer : {
-        user : {  
-            type : 'ObjectId',
-            ref : 'user',
-            required : true,
-        },
-        items : {
-            type: ['ObjectId'], // not going to record when it was added
-            ref: 'item'
-        }
+    buyer :{  
+        type : 'ObjectId',
+        ref : 'user',
+        required : true,
     }, //person starting
     messages : {
         type: [messageSchema],
@@ -36,8 +24,18 @@ export let ChatSchema = new Schema ({
         //     },
         //     message: "You can only close a chat after it is created"
         // }
+    },
+    sellerClose : {
+        type: Boolean,
+        required: true
+    },
+    buyerClose : {
+        type : Boolean,
+        required : true
     }
 },
 {
     timestamps:true,
 })
+
+ChatSchema.index({buyer:1,seller:1}, {unique:true})
