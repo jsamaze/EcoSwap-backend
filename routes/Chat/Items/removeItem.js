@@ -24,7 +24,7 @@ export default  async (req,res,next) => {
 
             })
         } else { 
-            throw new Error ("Chat does not exist")
+            throw new Error ("Item does not exist in chat")
         }
           
     } catch (e){

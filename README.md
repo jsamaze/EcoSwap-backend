@@ -153,7 +153,7 @@ All the type are String
 | Field :arrow_right: | `itemType` | `itemName`  | `user` | `description` |  `category`|  `condition`  |  `tags` |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | Data type | `WishList`/`Listed` | String | `ObjectId` referencing user | String | `Electronics`/`Fashion`/ `Furniture`/`Kitchenware` | `old`/`new` | `Array` of `String`
-`POST /user/register` | :heavy_check_mark: <br> ***by query***|:heavy_check_mark: |:x: <br> automatic|:heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:|
+`POST /user/register` | :heavy_check_mark: <br> ***by query e.g. `type: Listed`***|:heavy_check_mark: |:x: <br> automatic|:heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:|
 `PATCH /user/login`| :x:|:heavy_check_mark: |:x: |:heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:|
 ### Response body in data - `GET /item/:id`
 
@@ -196,4 +196,61 @@ All the type are String
 
 ### those applicable to more than one (listed items)
 
+| METHOD | Purpose |  Path | Need login | Can Have *(not must)* Query|
+| :-:| :-:| :-:|:-:|
+| `GET` |Perform a search on all items |`/items/search/:search?` <br> search text can be given or not  | Yes | Yes|
+| `GET` |Sort items by popularity (views)|`/items/popular`   | Yes (for all results) <br> No (max 10) | No|
+
+//yet to add the params u can add
+
 ## C. Chat API Endpoints
+
+Maybe i'll change to requiring query
+
+#### About the chat as a whole
+
+| METHOD | Purpose |  Path | Need login | Need Query|
+| :-:| :-:| :-:|:-:|:-:|
+| `GET` | Fetch chat between logged in user and specific user |`/chat/user/:username` <br> replace `:username` with username  | Yes | No|
+| `GET` |Fetch all chats along with the most recent chat |`/chat`  | Yes | No |
+| `POST` |Create a new chat with someone <br> i.e offer swaps with one of their item|`/chat/user/:username` <br> replace `:username` with username | Yes | No|
+
+//missing closing chat endpoint
+
+#### About the components of chat
+
+| METHOD | Purpose |  Path | Need login | Need Query|
+| :-:| :-:| :-:|:-:|:-:|
+| `POST` |Send a new message <br> Only supports text now|`/chat/user/:username/message` <br> replace `:username` with username  | Yes | No|
+| `POST` |Set a new item willing to trade list |`/chat/user/:username/item` <br> replace `:username` with username   | Yes | No|
+| `DELETE` |Remove an item from willing to trade list |`/chat/user/:username/item/:itemId` <br> replace `:username` with username and  `itemId` with `_id` of item  | Yes | No|
+
+> `POST` and `DELETE` endpoints will be implemented in socket
+
+### `POST` request body
+
+
+| Emoji | Meaning | 
+|:-:|:-:|
+|:heavy_check_mark: | Required |
+|:question:| optional|
+| :x: | don't include for `PATCH` (will cause error) /ignored elsewhere|
+
+> Only text message is supported <br> picture can be supported but will take time
+
+Data type for all is string
+
+| Field :arrow_right: | `itemId` | `textContent`  | 
+|:-:|:-:|:-:|
+`POST /chat/user/:username` | :heavy_check_mark:|:heavy_check_mark: |
+`POST /chat/user/:username/item`| :x:|:heavy_check_mark: |
+
+### `GET /chat/user/:username` Request Sample
+
+```json
+```
+
+### `GET /chat` Request sample
+
+```json
+```

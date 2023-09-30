@@ -9,12 +9,12 @@ export default  async (req,res,next) => {
         chat = await ChatModel.findById(chat._id)
 
         if (chat){
-            var item = await checkItemOwnership(req.session.username,req.params.itemId)
+            var item = await checkItemOwnership(req.session.username,req.body.itemId)
             if (item.itemType != "Listed"){
                 throw new Error("Item is not listed (it is wishlist)")
             }
             var itemChat = new ItemChatModel({
-                item: req.params.itemId,
+                item: req.body.itemId,
                 chat: chat._id,
                 user: req.session.user_id
             })

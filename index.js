@@ -40,6 +40,8 @@ import addMessage from './routes/Chat/Message/addMessage.js';
 import addItem from './routes/Chat/Items/addItem.js';
 import removeItem from './routes/Chat/Items/removeItem.js';
 import createChat from './routes/Chat/Entire Chat/createChat.js';
+import SearchItems from './routes/Items/SearchItems.js';
+import PopularItems from './routes/Items/PopularItems.js';
 
 // access the cert
 const key = fs.readFileSync('./HTTPS/key.pem');
@@ -121,6 +123,10 @@ server.listen(process.env.PORT,() => {
 });
 
 // the routes the server have
+app.get("/test", (req,res)=>{
+  console.log(req.query); //passed as array, received as array
+  res.send()
+})
 
 //A. User
 app.post("/user/register", Register)
@@ -146,18 +152,20 @@ app.patch('/user/',NeedAuthenticate,UpdateUser)
 //B. User Photo
 app.post("/user/photo", NeedAuthenticate , upload.single("userPhoto"), insertUserPhoto)
 
-//C. Listed Item - one (CRUD)
+//C.  Item - one (CRUD)
 app.post("/item",NeedAuthenticate,CreateItem)
 app.get("/item/:id",ReadItem)
 app.delete("/item/:id",NeedAuthenticate,DeleteItem)
 app.patch("/item/:id",NeedAuthenticate,UpdateItem)
 
-//D. Listed Item Photo (CRUD)
+//D.  Item Photo (CRUD)
 app.post("/item/:id/photo",NeedAuthenticate,upload.single("itemPhoto"),InsertItemPhoto)
 app.delete("/item/:id/photo",NeedAuthenticate,DeleteItemPhoto)
 
-//E. Listed Item - multiple (R)
+//E.  Item - multiple (R)
 //search by user, tags
+app.get("/items/search/:search?", NeedAuthenticate, SearchItems) // notice the S
+app.get("/items/popular", PopularItems)
 
 //F. Map API
 //consider populating regularly using cron
@@ -217,8 +225,8 @@ app.post("/chat/user/:username",NeedAuthenticate, createChat)  //put item in bod
 //for socket
 app.post("/chat/user/:username/message",NeedAuthenticate,addMessage) //put textContent in body
 
-app.post("/chat/user/:username/item/:itemId",NeedAuthenticate,addItem)
-app.delete("/chat/user/:username/item/:itemId",NeedAuthenticate,removeItem)
+app.post("/chat/user/:username/item",NeedAuthenticate,addItem)
+app.delete("/chat/user/:username/item",NeedAuthenticate,removeItem)
 
 // missing feature - rewards
 

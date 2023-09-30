@@ -81,7 +81,25 @@ export let ItemSchema = new Schema ({
             return result
             }
         },
-    timestamps:true
-})
+    timestamps:true,
+    statics : {
+        async getImageURLsStatic(photoName){
+            var result = []
+            if (photoName){
+                result = await Promise.all(
+                    photoName.map(async photoNa=>{
+                        return await s3.getSignedUrl('getObject',{
+                            Bucket:"ecoswap",
+                            Key:photoNa
+                        })
+                    })
+                ) 
+            } 
+
+            return result
+            }
+        },
+    }
+)
 
 //add a method to retrieve image path
