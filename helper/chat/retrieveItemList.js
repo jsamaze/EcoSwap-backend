@@ -22,7 +22,8 @@ export default async function (chatId, userId){
               $project: {
                 'items.itemName': 1,
                 'items.category': 1,
-                'items.condition': 1
+                'items.condition': 1,
+                'items._id':1,
               }
             },
             {

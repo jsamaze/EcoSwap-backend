@@ -42,7 +42,6 @@ export default  async (req,res,next) => {
                         status:"success but old photo not deleted"
                     })
                 } else {
-                    console.log("delete cake")
                     console.log(data)
                 }
             })

@@ -153,8 +153,8 @@ All the type are String
 | Field :arrow_right: | `itemType` | `itemName`  | `user` | `description` |  `category`|  `condition`  |  `tags` |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | Data type | `WishList`/`Listed` | String | `ObjectId` referencing user | String | `Electronics`/`Fashion`/ `Furniture`/`Kitchenware` | `old`/`new` | `Array` of `String`
-`POST /user/register` | :heavy_check_mark: <br> ***by query e.g. `type: Listed`***|:heavy_check_mark: |:x: <br> automatic|:heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:|
-`PATCH /user/login`| :x:|:heavy_check_mark: |:x: |:heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:|
+`POST /item` | :heavy_check_mark: <br> ***by query e.g. `type: Listed`***|:heavy_check_mark: |:x: <br> automatic|:heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:|
+`PATCH /item/:id`| :x:|:heavy_check_mark: |:x: |:heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:|
 ### Response body in data - `GET /item/:id`
 
 ```json
@@ -197,15 +197,21 @@ All the type are String
 ### those applicable to more than one (listed items)
 
 | METHOD | Purpose |  Path | Need login | Can Have *(not must)* Query|
-| :-:| :-:| :-:|:-:|
+| :-:| :-:| :-:|:-:|:-:|
 | `GET` |Perform a search on all items |`/items/search/:search?` <br> search text can be given or not  | Yes | Yes|
 | `GET` |Sort items by popularity (views)|`/items/popular`   | Yes (for all results) <br> No (max 10) | No|
 
-//yet to add the params u can add
+#### Parameters/Query to add for `items/search/`
+
+| parameter name | Type | 
+|:-:|:-:|
+|'tags'| Array of strings|
+|'category'|  `Electronics`/`Fashion`/ `Furniture`/`Kitchenware` |
+|'condition'| `old`/`new`|
+|"itemType"| `Listed`/`WishList` <br> defaults to `Listed` |
+| "username"| String|
 
 ## C. Chat API Endpoints
-
-Maybe i'll change to requiring query
 
 #### About the chat as a whole
 
@@ -213,9 +219,10 @@ Maybe i'll change to requiring query
 | :-:| :-:| :-:|:-:|:-:|
 | `GET` | Fetch chat between logged in user and specific user |`/chat/user/:username` <br> replace `:username` with username  | Yes | No|
 | `GET` |Fetch all chats along with the most recent chat |`/chat`  | Yes | No |
-| `POST` |Create a new chat with someone <br> i.e offer swaps with one of their item|`/chat/user/:username` <br> replace `:username` with username | Yes | No|
+| `POST` |Create a new chat with someone <br> i.e offer swaps with one of their item <br> if user is connected by socket, they will be notified|`/chat/user/:username` <br> replace `:username` with username | Yes | No|
+| `DELETE` |Delete a chat with someone <br> if user is connected by socket, they will be notified |`/chat/user/:username` <br> replace `:username` with username | Yes | No|
 
-//missing closing chat endpoint
+//missing closing chat successfully endpoint
 
 #### About the components of chat
 
@@ -248,9 +255,94 @@ Data type for all is string
 ### `GET /chat/user/:username` Request Sample
 
 ```json
+{
+		"_id": "651a8a6af59290d118620cb8",
+		"messages": [
+			{
+				"sender": "buyer",
+				"textContent": "kk",
+				"_id": "651ac80298e56021d1b7fd28",
+				"createdAt": "2023-10-02T13:39:14.884Z",
+				"updatedAt": "2023-10-02T13:39:14.884Z"
+			},
+			{
+				"sender": "buyer",
+				"textContent": "jok",
+				"_id": "651aeca8e6c426aea46aad18",
+				"createdAt": "2023-10-02T16:15:36.020Z",
+				"updatedAt": "2023-10-02T16:15:36.020Z"
+			}
+		],
+		"createdAt": "2023-10-02T09:16:26.158Z",
+		"updatedAt": "2023-10-02T16:15:36.021Z",
+		"seller": {
+			"_id": "651116a5497096ae12395d2b",
+			"fullName": "lol",
+			"username": "joshua"
+		},
+		"buyer": {
+			"_id": "651a7f302d9d56d56c95fee0",
+			"fullName": "sarah",
+			"username": "sarah"
+		},
+		"sellerItems": [
+			{
+				"_id": "651469fac50150df08c24ed1",
+				"itemName": "Awesome Wooden Bike",
+				"category": "Fashion",
+				"condition": "old"
+			}
+		],
+		"buyerItems": [
+			{
+				"_id": "651aa19bb4bb20456b7d587d",
+				"itemName": "Gorgeous Steel Pants",
+				"category": "Kitchenware",
+				"condition": "new"
+			}
+		]
+	}
 ```
 
 ### `GET /chat` Request sample
 
 ```json
+ [
+  {
+  	"_id": "651a8a6af59290d118620cb8",
+  	"createdAt": "2023-10-02T09:16:26.158Z",
+  	"updatedAt": "2023-10-02T16:15:36.021Z",
+  	"latestMessage": {
+  		"sender": "buyer",
+  		"textContent": "hei",
+  		"createdAt": "2023-10-02T16:15:36.020Z"
+  	},
+  	"seller": {
+  		"fullName": "lol",
+  		"username": "joshua"
+  	},
+  	"buyer": {
+  		"fullName": "sarah",
+  		"username": "sarah"
+  	}
+  },
+  {
+  	"_id": "651a8c6df59290d118620d68",
+  	"createdAt": "2023-10-02T09:25:01.070Z",
+  	"updatedAt": "2023-10-02T17:27:59.856Z",
+  	"latestMessage": {
+  		"sender": "seller",
+  		"textContent": "is this avail",
+  		"createdAt": "2023-10-02T17:27:59.856Z"
+  	},
+  	"seller": {
+  		"fullName": "jakob",
+  		"username": "jakob"
+  	},
+  	"buyer": {
+  		"fullName": "sarah",
+  		"username": "sarah"
+  	}
+  }
+  ]
 ```

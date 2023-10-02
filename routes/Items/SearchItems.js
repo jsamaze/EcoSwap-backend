@@ -1,6 +1,6 @@
 import { ItemModel} from "../../model/index.js";
 
-var matchedFileds = ['tags', 'desc','category','condition', "itemType", "username"]
+var matchedFileds = ['tags','category','condition', "itemType", "username"]
 
 export default  async (req,res,next) => {
     try {

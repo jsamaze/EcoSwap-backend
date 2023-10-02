@@ -5,14 +5,14 @@ import { ChatModel, ItemChatModel, UserModel } from "../../../model/index.js";
 export default  async (req,res,next) => {
     try {
         var chat = await retrieveChat(req.session.username,req.params.username)
-        chat = await ChatModel.findById(chat._id)
+        var chatDoc = await ChatModel.findById(chat._id)
         if (chat){
             
-            chat.messages.push({
-                sender : chat.seller._id == req.session.user_id ? "seller" : "buyer",
+            chatDoc.messages.push({
+                sender : chat.seller.username == req.session.username ? "seller" : "buyer",
                 textContent: req.body.textContent
             })
-            await chat.save();
+            await chatDoc.save();
             res.send({
                 status : "Success"
             })
@@ -26,5 +26,5 @@ export default  async (req,res,next) => {
             status : "failed to add message",
             problem : e.message
         });
-    }
+    } 
 }

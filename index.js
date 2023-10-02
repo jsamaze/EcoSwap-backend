@@ -43,6 +43,11 @@ import createChat from './routes/Chat/Entire Chat/createChat.js';
 import SearchItems from './routes/Items/SearchItems.js';
 import PopularItems from './routes/Items/PopularItems.js';
 
+import retrieveChat from './helper/chat/retrieveChat.js';
+import checkItemOwnership from './helper/checkItemOwnership.js';
+import { ChatModel,ItemChatModel } from './model/index.js';
+import deleteFailChat from './routes/Chat/Entire Chat/deleteFailChat.js';
+
 // access the cert
 const key = fs.readFileSync('./HTTPS/key.pem');
 const cert = fs.readFileSync('./HTTPS/cert.pem');
@@ -52,11 +57,10 @@ const app = express();
 const server = https.createServer({key: key, cert: cert }, app);
 
 //integrate socket.io
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: {
     origin: "http://localhost:5173",
     credentials:true,
-    
       
   }, connectionStateRecovery: {
     // the backup duration of the sessions and the packets
@@ -220,30 +224,23 @@ app.post("/busStop/radius",async (req,res)=>{
 
 // G. Chat API
 
-// exclude finished chat from belo
-//  /user/ -> user recent chats
-// https://www.mongodb.com/docs/v6.0/reference/operator/aggregation/last-array-element/
-// /user/:userId -> chat history with person (if exists)
-
 app.get("/chat/user/:username",NeedAuthenticate,fetchOneChat) //one chats //tested
 app.get("/chat",NeedAuthenticate,fetchChats) //recent chats
 app.post("/chat/user/:username",NeedAuthenticate, createChat)  //put item in body // tested
 
-//for socket
-app.post("/chat/user/:username/message",NeedAuthenticate,addMessage) //put textContent in body
 
-app.post("/chat/user/:username/item",NeedAuthenticate,addItem)
-app.delete("/chat/user/:username/item",NeedAuthenticate,removeItem)
+//think again
+app.delete("/chat/user/:username",NeedAuthenticate,deleteFailChat)
+
+
+////for socket
+// app.post("/chat/user/:username/message",NeedAuthenticate,addMessage) //put textContent in body
+// app.post("/chat/user/:username/item",NeedAuthenticate,addItem)
+// app.delete("/chat/user/:username/item",NeedAuthenticate,removeItem)
+
 
 // missing feature - rewards
 
-// Socket.io
-
-// sendMsg event -> receiveMsg event
-// tickItem event -> itemTicked event
-// done event -> done event
-
-// prioritise emitting before updating mongoDB
 
 
 //when the server is ended using CTRL+C
@@ -264,13 +261,98 @@ io.on('connection', (socket) => {
     console.log(`${username} connected`);
     socket.join(username)
   
-    socket.on("message",async (message)=> {
-      console.log(username + "sent a message")
-      console.log(message)
-      console.log(io.of("/").adapter.rooms)
-      // generatePrimes(1000000);
-      socket.to(message.destination).emit("message",message)
-    })
+    socket.on("sendMessage",async (message,ack) => {
+      try {
+          var chat = await retrieveChat(username,message.to)
+          var chatDoc = await ChatModel.findById(chat._id)
+          if (chat){
+              chatDoc.messages.push({
+                  sender : chat.seller.username == username ? "seller" : "buyer",
+                  textContent: message.textContent
+              })
+              await chatDoc.save();
+              ack ({
+                  code : 200,
+                  status : "success"
+              })
+              socket.to(message.to).emit("message",{
+                sender : username,
+                textContent : message.textContent,
+                createdAt : chatDoc.messages[chatDoc.messages.length-1].createdAt
+            })
+  
+          } else { 
+              throw new Error ("Chat does not exist")
+          }
+            
+      } catch (e){
+          console.log(e);
+          ack ({
+              code : 500,
+              status : "failed",
+              problem : e.message
+          })
+      } 
+  })
+
+    socket.on("updateItemChat",async (to,items,ack) => {
+      console.log(to,username,items)
+
+      const dest = to;
+      try {
+          var chat = await retrieveChat(to,username)
+          var chatDoc = await ChatModel.findById(chat._id)
+
+        
+          if (chat){
+              var userItems = await ItemChatModel.find({chat : chat._id, user: socket.request.session.user_id})
+              console.log(userItems)
+              var itemIdInList = userItems.map((e)=> e.item.toString());
+              console.log(itemIdInList)
+
+              for (var itemId of items){
+
+                  if (!itemIdInList.includes(itemId)){
+                      var itemDoc = await checkItemOwnership(username,itemId)
+                      if (itemDoc.itemType != "Listed"){
+                          throw new Error("Item is not listed (it is wishlist)")
+                      }
+                      var itemChat = new ItemChatModel({
+                          item: itemId,
+                          chat: chat._id,
+                          user: socket.request.session.user_id
+                      })
+                      await itemChat.save()
+                    } 
+              }
+              for (var itemId of itemIdInList){
+                if (!items.includes(itemId)){
+                  await ItemChatModel.deleteOne({
+                    item :itemId,
+                    chat : chat._id
+                  })
+                }
+              }
+              socket.to(dest).emit("itemchat",username,items)
+
+              ack({
+                  code :200,
+                  status : "Success"
+              })
+
+          } else { 
+              throw new Error ("Chat does not exist")
+          }
+            
+      } catch (e){
+          console.log(e);
+          ack({
+              code :500,
+              status : "failed to create chat",
+              problem : e.message
+          });
+      }
+  })
   
     socket.on("disconnect", () => {
       socket.leave(username)
@@ -282,29 +364,3 @@ io.on('connection', (socket) => {
 
 
 });
-
-//simulate long database wait
-
-const MAX_PRIME = 1000000;
-
-function isPrime(n) {
-  for (let i = 2; i <= Math.sqrt(n); i++) {
-    if (n % i === 0) {
-      return false;
-    }
-  }
-  return n > 1;
-}
-
-const random = (max) => Math.floor(Math.random() * max);
-function generatePrimes(quota) {
-  const primes = [];
-  while (primes.length < quota) {
-    const candidate = random(MAX_PRIME);
-    if (isPrime(candidate)) {
-      primes.push(candidate);
-    }
-  }
-  return primes;
-}
-

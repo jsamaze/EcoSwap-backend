@@ -1,6 +1,7 @@
 import checkItemOwnership from "../../../helper/checkItemOwnership.js";
 import retrieveChat from "../../../helper/chat/retrieveChat.js";
 import { ChatModel, ItemChatModel, UserModel } from "../../../model/index.js";
+import { io } from "../../../index.js";
 
 export default  async (req,res,next) => {
     try {
@@ -10,7 +11,6 @@ export default  async (req,res,next) => {
             })
         }
         var chat = await retrieveChat(req.session.username,req.params.username );
-        console.log(chat)
         if (!chat){
             var item = await checkItemOwnership(req.params.username,req.body.itemId)
             if (item.itemType != "Listed"){
@@ -37,6 +37,7 @@ export default  async (req,res,next) => {
             })
 
             await itemChat.save()
+            io.of("/").to(req.params.username).emit("newChat",req.session.username)
             res.status(200).send({
                 status:"Success",
                 chatId : chat._id

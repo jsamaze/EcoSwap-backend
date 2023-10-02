@@ -114,8 +114,7 @@ export default  async (req,res,next) => {
 
         res.send({
             status : "success",
-            chatsAsBuyer,
-            chatsAsSeller
+            data : chatsAsBuyer.concat(chatsAsSeller)
         })
 
     } catch (e){
