@@ -55,7 +55,14 @@ const server = https.createServer({key: key, cert: cert }, app);
 const io = new Server(server, {
   cors: {
     origin: "http://localhost:5173",
-    credentials:true
+    credentials:true,
+    
+      
+  }, connectionStateRecovery: {
+    // the backup duration of the sessions and the packets
+    maxDisconnectionDuration: 2 * 60 * 1000,
+    // whether to skip middlewares upon successful recovery
+    skipMiddlewares: true,
   }});
 
 //configure sessions
@@ -251,23 +258,29 @@ process.on('SIGTERM', cleanup);
 //Below are the socket code
 
 io.on('connection', (socket) => {
-  let username = socket.request.session.username;
-  console.log('a user connected');
-  console.log(socket.request.session);
-  console.log(socket.request.session.username);
-  console.log(socket.request.session.user_id);
-  console.log('---')
 
-  socket.on("cake",async ()=> {
-    console.log(username + " wants cake")
-    socket.emit("test") //reply only to the client that sent the request
-    generatePrimes(1000000);
-    socket.emit("done","cake baked")
-  })
+  const username = socket.request.session.username
+  if (username){
+    console.log(`${username} connected`);
+    socket.join(username)
+  
+    socket.on("message",async (message)=> {
+      console.log(username + "sent a message")
+      console.log(message)
+      console.log(io.of("/").adapter.rooms)
+      // generatePrimes(1000000);
+      socket.to(message.destination).emit("message",message)
+    })
+  
+    socket.on("disconnect", () => {
+      socket.leave(username)
+      console.log(`${username} disconnected`);
+      })
+  } else {
+    console.log("bad socket")
+  }
 
-  // socket.on("cake",async ()=> {
-  //   console.log(username + " wants cake2")
-  // })
+
 });
 
 //simulate long database wait

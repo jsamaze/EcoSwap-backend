@@ -1,5 +1,5 @@
 import checkItemOwnership from "../../helper/checkItemOwnership.js";
-import { ItemModel } from "../../model/index.js";
+import { ItemChatModel, ItemModel, ViewModel } from "../../model/index.js";
 
 
 export default  async (req,res,next) => {
@@ -8,6 +8,9 @@ export default  async (req,res,next) => {
 
         await ItemModel
             .deleteOne({ _id: req.params.id })
+        await ItemChatModel.deleteMany({item : req.params.id})
+
+        await ViewModel.deleteMany({item : req.params.id})
 
 
     } catch (e){

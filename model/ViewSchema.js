@@ -17,3 +17,5 @@ export let ViewSchema = new Schema ({
         default : Date.now
     }
 })
+
+ViewSchema.index({user:1,item:1}, {unique:true})
