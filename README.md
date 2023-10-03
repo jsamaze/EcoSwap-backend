@@ -211,7 +211,88 @@ All the type are String
 |"itemType"| `Listed`/`WishList` <br> defaults to `Listed` |
 | "username"| String|
 
-## C. Chat API Endpoints
+## C. Map-related API
+
+> All dont need login except for the last one!
+
+| METHOD | Purpose |  Path | Need Login | (Query) radiusInKm | (Query) latitude longitude (separate)|
+| :-:| :-:| :-:|:-:|:-:|:-:|
+| `GET` |Re-populate the busStop table <br> Will take a long time |`/busStop/populate` |No| - | -|
+| `GET` |Find bus stops withing a circular boundary |`/busStop/radius` | No | Yes | Yes|
+| `GET` | Find users nearby user's `preferredBusStop` OR specified coordinates|`/busStop/nearbyUsers` | No| Yes | Optional if logged in <br> otherwise required |
+| `GET` | Provide a list of listed items that have similarity to user's wishlist items <br> **IMPORTANT** no information about location is provided- display in a table |`/busStop/nearbyListingsRecommended` | Yes| Yes | Optional |
+
+### `GET /busStop/nearbyUsers` sample body 
+```json
+[
+	{
+		"_id": "65124f5f0f765221e6a7de5b",
+		"fullName": "hyinki",
+		"username": "hyinki",
+		"email": "kewodac553@bnovel.com",
+		"photoName": null,
+		"preferredBusStop": "08069",
+		"loc": {
+			"type": "Point",
+			"coordinates": [
+				103.84936128375956, //longitude
+				1.29821382250893 // latitude  (this order is required by MongoDB)
+			]
+		}
+	},...
+]
+```
+
+```json
+[
+	{
+		"listedItem": {
+			"_id": "65156c7671a0545dcfb3ee79",
+			"itemType": "Listed",
+			"itemName": "Small Rubber Pizza",
+			"user": {
+				"_id": "65124f5f0f765221e6a7de5b",
+				"fullName": "hyinki",
+				"username": "hyinki",
+				"email": "kewodac553@bnovel.com",
+				"preferredBusStop": "08069"
+			},
+			"description": "New range of formal shirts are designed keeping you in mind. With fits and styling that will make you stand apart",
+			"category": "Electronics",
+			"condition": "new",
+			"tags": [
+				"Fantastic",
+				"Incredible",
+				"Licensed",
+				"Bespoke"
+			],
+			"views": 0,
+			"createdAt": "2023-09-28T12:07:18.155Z",
+			"updatedAt": "2023-09-28T12:07:18.155Z"
+		},
+		"wishListItemMatch": [
+			{
+				"_id": "651469d9c50150df08c24ebb",
+				"itemType": "WishList",
+				"itemName": "Tasty Wooden Chicken",
+				"description": "New range of formal shirts are designed keeping you in mind. With fits and styling that will make you stand apart",
+				"category": "Electronics",
+				"condition": "new",
+				"tags": [
+					"Sleek",
+					"Modern",
+					"Tasty",
+					"Oriental"
+				],
+				"views": 3,
+				"createdAt": "2023-09-27T17:43:53.571Z",
+				"updatedAt": "2023-09-27T18:11:56.051Z"
+			},...
+		]
+]
+```
+
+## D. Chat API Endpoints
 
 > Important! Socket details are not included
 

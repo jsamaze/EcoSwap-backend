@@ -52,6 +52,10 @@ import { ChatModel,ItemChatModel } from './model/index.js';
 
 //for bus stop
 import {BusStopModel} from './model/index.js'
+import fetchNearbyBusStops from './helper/busStop/fetchNearbyBusStops.js';
+import findNearbyUsers from './routes/BusStop/findNearbyUsers.js';
+import findNearbyListingReccomendations from './routes/BusStop/findNearbyListingReccomendations.js';
+// import findNearbyListing from './routes/BusStop/findNearbyListing.js';
 
 // access the cert
 const key = fs.readFileSync('./HTTPS/key.pem');
@@ -197,7 +201,7 @@ app.get("/items/popular", PopularItems)
 // find listings from all nearby bus stops
 // perform matching search for each item
 
-// find nearest bus stops
+
 app.get("/busStop/populate",async (req,res)=>{
   try {
     await populateBusStop()
@@ -211,21 +215,18 @@ app.get("/busStop/populate",async (req,res)=>{
     })
   }
 })
-app.post("/busStop/radius",async (req,res)=>{
-  console.log(req.body)
-  var result = await BusStopModel.find({
-    loc: {
-       $geoWithin: {
-          $centerSphere: [
-             [ req.body.longitude, req.body.latitude ],
-             req.body.radiusInKm / 6378.1
-          ]
-       }
-    }
- } )
-
- res.send(result)
-})
+// find nearest bus stops
+app.get("/busStop/radius",async (req,res)=>{
+  try {
+    var result = await fetchNearbyBusStops(req.query.latitude,req.query.longitude,req.query.radiusInKm)
+    res.send(result)
+  } catch (e){
+    res.status(500).send(req.params)
+  }
+}) //latitude longitude radiusInKm
+// find users near you OR a specified location
+app.get("/busStop/nearbyUsers",findNearbyUsers) //radiusInKm must be specified
+app.get("/busStop/nearbyListingsRecommended",NeedAuthenticate,findNearbyListingReccomendations)
 
 // G. Chat API
 
