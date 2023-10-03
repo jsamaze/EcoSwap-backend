@@ -26,7 +26,7 @@ import ConfirmPassword from './routes/User/ConfirmPassword.js';
 import FetchUser from './routes/User/FetchUser.js';
 import UpdateUser from './routes/User/UpdateUser.js';
 
-import populateBusStop from './helper/populateBusStop.js';
+import populateBusStop from './helper/busStop/populateBusStop.js';
 
 import CreateItem from './routes/Item/CreateItem.js';
 import ReadItem from './routes/Item/ReadItem.js';
@@ -42,11 +42,16 @@ import removeItem from './routes/Chat/Items/removeItem.js';
 import createChat from './routes/Chat/Entire Chat/createChat.js';
 import SearchItems from './routes/Items/SearchItems.js';
 import PopularItems from './routes/Items/PopularItems.js';
+import deleteFailChat from './routes/Chat/Entire Chat/deleteFailChat.js';
+import deleteSuccessChat from './routes/Chat/Entire Chat/deleteSuccessChat.js';
 
+//for the socket 
 import retrieveChat from './helper/chat/retrieveChat.js';
 import checkItemOwnership from './helper/checkItemOwnership.js';
 import { ChatModel,ItemChatModel } from './model/index.js';
-import deleteFailChat from './routes/Chat/Entire Chat/deleteFailChat.js';
+
+//for bus stop
+import {BusStopModel} from './model/index.js'
 
 // access the cert
 const key = fs.readFileSync('./HTTPS/key.pem');
@@ -59,7 +64,7 @@ const server = https.createServer({key: key, cert: cert }, app);
 //integrate socket.io
 export const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     credentials:true,
       
   }, connectionStateRecovery: {
@@ -227,11 +232,10 @@ app.post("/busStop/radius",async (req,res)=>{
 app.get("/chat/user/:username",NeedAuthenticate,fetchOneChat) //one chats //tested
 app.get("/chat",NeedAuthenticate,fetchChats) //recent chats
 app.post("/chat/user/:username",NeedAuthenticate, createChat)  //put item in body // tested
-
+app.patch("/chat/user/:username",NeedAuthenticate,deleteSuccessChat)
 
 //think again
 app.delete("/chat/user/:username",NeedAuthenticate,deleteFailChat)
-
 
 ////for socket
 // app.post("/chat/user/:username/message",NeedAuthenticate,addMessage) //put textContent in body
@@ -239,7 +243,7 @@ app.delete("/chat/user/:username",NeedAuthenticate,deleteFailChat)
 // app.delete("/chat/user/:username/item",NeedAuthenticate,removeItem)
 
 
-// missing feature - rewards
+// H. missing feature - rewards
 
 
 

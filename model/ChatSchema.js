@@ -38,4 +38,4 @@ export let ChatSchema = new Schema ({
     timestamps:true,
 })
 
-ChatSchema.index({buyer:1,seller:1}, {unique:true})
+ChatSchema.index({buyer:1,seller:1,closedOn:1}, {unique:true})

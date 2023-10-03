@@ -10,6 +10,12 @@ export default  async (req,res,next) => {
                 status : "Issue with body"
             })
         }
+        if (req.session.username==req.params.username ){
+            res.status(400).send({
+                status: "cant start a chat with yourself!"
+            })
+            return;
+        }
         var chat = await retrieveChat(req.session.username,req.params.username );
         if (!chat){
             var item = await checkItemOwnership(req.params.username,req.body.itemId)

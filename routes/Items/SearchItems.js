@@ -5,8 +5,8 @@ var matchedFileds = ['tags','category','condition', "itemType", "username"]
 export default  async (req,res,next) => {
     try {
         // by default assume that it is a listed not yet done item
-        console.log(req.query)
-        console.log(req.params)
+        // console.log(req.query)
+        // console.log(req.params)
 
 
             Object.keys(req.query).forEach(key => {
@@ -23,7 +23,7 @@ export default  async (req,res,next) => {
             if (toValidate.username){
                 delete toValidate.username
             }
-            console.log(toValidate)
+            // console.log(toValidate)
             if (Object.keys(toValidate).length>0){
                 try{
                     await ItemModel.validate(toValidate,Object.keys(toValidate))
@@ -71,7 +71,8 @@ export default  async (req,res,next) => {
                     updatedAt: 1,
                     tags:1,
                     photoName:1,
-                    views:1
+                    views:1,
+                    done:1,
                 }
                 },
                 {
@@ -132,7 +133,7 @@ export default  async (req,res,next) => {
             })
 
 
-            console.log(aggregation)
+            // console.log(aggregation)
 
             aggregation.push({
                 $project : {

@@ -1,6 +1,5 @@
 import retrieveChat from "../../../helper/chat/retrieveChat.js";
 import retrieveItemList from "../../../helper/chat/retrieveItemList.js";
-import { ChatModel, ItemChatModel, UserModel } from "../../../model/index.js";
 
 export default  async (req,res,next) => {
     try {

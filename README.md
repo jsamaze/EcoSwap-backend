@@ -213,6 +213,8 @@ All the type are String
 
 ## C. Chat API Endpoints
 
+> Important! Socket details are not included
+
 #### About the chat as a whole
 
 | METHOD | Purpose |  Path | Need login | Need Query|
@@ -221,36 +223,7 @@ All the type are String
 | `GET` |Fetch all chats along with the most recent chat |`/chat`  | Yes | No |
 | `POST` |Create a new chat with someone <br> i.e offer swaps with one of their item <br> if user is connected by socket, they will be notified|`/chat/user/:username` <br> replace `:username` with username | Yes | No|
 | `DELETE` |Delete a chat with someone <br> if user is connected by socket, they will be notified |`/chat/user/:username` <br> replace `:username` with username | Yes | No|
-
-//missing closing chat successfully endpoint
-
-#### About the components of chat
-
-| METHOD | Purpose |  Path | Need login | Need Query|
-| :-:| :-:| :-:|:-:|:-:|
-| `POST` |Send a new message <br> Only supports text now|`/chat/user/:username/message` <br> replace `:username` with username  | Yes | No|
-| `POST` |Set a new item willing to trade list |`/chat/user/:username/item` <br> replace `:username` with username   | Yes | No|
-| `DELETE` |Remove an item from willing to trade list |`/chat/user/:username/item/:itemId` <br> replace `:username` with username and  `itemId` with `_id` of item  | Yes | No|
-
-> `POST` and `DELETE` endpoints will be implemented in socket
-
-### `POST` request body
-
-
-| Emoji | Meaning | 
-|:-:|:-:|
-|:heavy_check_mark: | Required |
-|:question:| optional|
-| :x: | don't include for `PATCH` (will cause error) /ignored elsewhere|
-
-> Only text message is supported <br> picture can be supported but will take time
-
-Data type for all is string
-
-| Field :arrow_right: | `itemId` | `textContent`  | 
-|:-:|:-:|:-:|
-`POST /chat/user/:username` | :heavy_check_mark:|:heavy_check_mark: |
-`POST /chat/user/:username/item`| :x:|:heavy_check_mark: |
+| `PATCH` |Close a chat with someone successfully <br> need both party to agree |`/chat/user/:username` <br> replace `:username` with username | Yes | Yes <br> **to reject specify reject=True**|
 
 ### `GET /chat/user/:username` Request Sample
 
@@ -346,3 +319,32 @@ Data type for all is string
   }
   ]
 ```
+---
+#### About the components of chat - deprecated please refer to socket implementation
+
+| METHOD | Purpose |  Path | Need login | Need Query|
+| :-:| :-:| :-:|:-:|:-:|
+| `POST` |Send a new message <br> Only supports text now|`/chat/user/:username/message` <br> replace `:username` with username  | Yes | No|
+| `POST` |Set a new item willing to trade list |`/chat/user/:username/item` <br> replace `:username` with username   | Yes | No|
+| `DELETE` |Remove an item from willing to trade list |`/chat/user/:username/item/:itemId` <br> replace `:username` with username and  `itemId` with `_id` of item  | Yes | No|
+
+> `POST` and `DELETE` endpoints will be implemented in socket
+
+### `POST` request body
+
+
+| Emoji | Meaning | 
+|:-:|:-:|
+|:heavy_check_mark: | Required |
+|:question:| optional|
+| :x: | don't include for `PATCH` (will cause error) /ignored elsewhere|
+
+> Only text message is supported <br> picture can be supported but will take time
+
+Data type for all is string
+
+| Field :arrow_right: | `itemId` | `textContent`  | 
+|:-:|:-:|:-:|
+`POST /chat/user/:username` | :heavy_check_mark:|:heavy_check_mark: |
+`POST /chat/user/:username/item`| :x:|:heavy_check_mark: |
+

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { BusStopModel } from '../model/index.js';
+import { BusStopModel } from '../../model/index.js';
 export default async () => {
     await BusStopModel.deleteMany({})
 
@@ -17,8 +17,6 @@ export default async () => {
                 "$skip":skip
             }},
         );
-        console.log(response.data.value.length)
-        console.log(skip)
         continueAPI= (response.data.value.length==500)
         response.data.value.forEach(async element => {
             busStop = BusStopModel({
