@@ -1,7 +1,8 @@
 import retrieveChat from "../../../helper/chat/retrieveChat.js";
 import retrieveItemList from "../../../helper/chat/retrieveItemList.js";
+import createChatReviews from "../../../helper/chatReview/createChatReviews.js";
 import { io } from "../../../index.js";
-import { ChatModel, ItemChatModel, ItemModel, UserModel } from "../../../model/index.js";
+import { ChatModel, ItemChatModel, ItemModel, PointChoiceModel, PointTransactionModel, UserModel } from "../../../model/index.js";
 
 export default  async (req,res,next) => {
     try {
@@ -74,6 +75,30 @@ export default  async (req,res,next) => {
                         break;
                 }
                 await chatDoc.save()
+
+                await createChatReviews(chatDoc._id,chatDoc.seller,chatDoc.buyer)
+
+                const choice = await PointChoiceModel.findOne({
+                    rewardName : "trade"
+                })
+        
+        
+        
+                var transaction = new PointTransactionModel({
+                    user : chat.seller,
+                    choice: choice._id
+                })
+
+                await transaction.save()
+
+
+                transaction = new PointTransactionModel({
+                    user : chat.buyer,
+                    choice: choice._id
+                })
+        
+                await transaction.save()
+        
                 res.status(200).send({
                     status:"endChatSuccess"
                 })

@@ -13,7 +13,9 @@ export default async (username)=>{
         subject: 'EcoSwap - Verify Password',
         html:  `Please enter this OTP into the website: <br>
                 
-                <h1>${user.otp}</h1>`
+                <h1>${user.otp}</h1>
+                
+                The code will expire in 5 minutes`
     })
     await user.save()
 }

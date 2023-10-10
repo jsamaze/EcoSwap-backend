@@ -1,4 +1,4 @@
-import { ItemModel } from "../../model/index.js";
+import { ItemModel, PointChoiceModel, PointTransactionModel } from "../../model/index.js";
 
 export default async (req,res) => {
     try {
@@ -22,6 +22,19 @@ export default async (req,res) => {
         });
 
         await item.save();
+
+        const choice = await PointChoiceModel.findOne({
+            rewardName : "addListedItem"
+        })
+
+
+
+        const transaction = new PointTransactionModel({
+            user : req.session.user_id,
+            choice: choice._id
+        })
+
+        await transaction.save()
 
 
         res.status(200).send ({

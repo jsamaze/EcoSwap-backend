@@ -1,5 +1,5 @@
 import checkItemOwnership from "../../helper/checkItemOwnership.js";
-import { ItemChatModel, ItemModel, ViewModel } from "../../model/index.js";
+import { ItemChatModel, ItemModel, PointChoiceModel, PointTransactionModel, ViewModel } from "../../model/index.js";
 
 
 export default  async (req,res,next) => {
@@ -12,6 +12,23 @@ export default  async (req,res,next) => {
 
         await ViewModel.deleteMany({item : req.params.id})
 
+        const choice = await PointChoiceModel.findOne({
+            rewardName : "removeListedItem"
+        })
+
+
+
+        const transaction = new PointTransactionModel({
+            user : req.session.user_id,
+            choice: choice._id
+        })
+
+        await transaction.save()
+
+
+        res.status(200).send ({
+            status:"success",
+        })
 
     } catch (e){
         console.log(e);

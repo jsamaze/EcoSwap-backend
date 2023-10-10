@@ -110,6 +110,10 @@ All the type are String
 `PATCH /user/`| :heavy_check_mark: |:x: |:heavy_check_mark: <br> OTP| :x: |:x:| :heavy_check_mark: | :heavy_check_mark:|
 ### Response body in data - `GET /user/`
 
+> In current implementation, it can show reviews given and received 
+
+> Also, if the user is logged in and he is accessing his own data, can see all pts transaction, net points, accumulated points, and current tier
+
 ```json
 {
 	"_id": "651116a5497096ae12395d2b",
@@ -210,6 +214,7 @@ All the type are String
 |'condition'| `old`/`new`|
 |"itemType"| `Listed`/`WishList` <br> defaults to `Listed` |
 | "username"| String|
+| "traded"| true/false <br> case insensitive|
 
 ## C. Map-related API
 
@@ -222,9 +227,11 @@ All the type are String
 | `GET` | Find users nearby user's `preferredBusStop` OR specified coordinates|`/busStop/nearbyUsers` | No| Yes | Optional if logged in <br> otherwise required |
 | `GET` | Provide a list of listed items that have similarity to user's wishlist items <br> **IMPORTANT** no information about location is provided- display in a table |`/busStop/nearbyListingsRecommended` | Yes| Yes | Optional |
 
+> Don't forget to add cron job to repopulate busstop databse
+
 ### `GET /busStop/nearbyUsers` sample body 
 ```json
-[
+{
 	{
 		"_id": "65124f5f0f765221e6a7de5b",
 		"fullName": "hyinki",
@@ -240,12 +247,12 @@ All the type are String
 			]
 		}
 	},...
-]
+}
 ```
 
 ```json
-[
-	{
+{
+	"65156c7671a0545dcfb3ee79" : { //user id
 		"listedItem": {
 			"_id": "65156c7671a0545dcfb3ee79",
 			"itemType": "Listed",
@@ -289,7 +296,8 @@ All the type are String
 				"updatedAt": "2023-09-27T18:11:56.051Z"
 			},...
 		]
-]
+	}
+}
 ```
 
 ## D. Chat API Endpoints

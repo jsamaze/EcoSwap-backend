@@ -56,7 +56,13 @@ export default  async (req,res,next) => {
         result.forEach(e=>{
           e.loc = busStopMap.get(e.preferredBusStop).loc
         })
-        res.send(result)
+
+        let finalResult = {}
+
+        result.forEach(e =>{
+          finalResult[e._id]=e
+        })
+        res.send(finalResult)
           
     } catch (e){
         console.log(e);

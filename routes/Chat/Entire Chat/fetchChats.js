@@ -4,6 +4,10 @@ import { ChatModel, ItemChatModel, UserModel } from "../../../model/index.js";
 
 export default  async (req,res,next) => {
     try {
+
+        var closed = req.query.closed ?? "false"
+        console.log("closed"+closed)
+        closed = (closed.toLowerCase() == "true")
         var chatsAsSeller = await ChatModel.aggregate(
             [
               { $match: { closedOn: { $exists: false } } },
@@ -52,7 +56,7 @@ export default  async (req,res,next) => {
                   buyer: { username: 1, fullName: 1 }
                 }
               },
-              { $match: { closedOn: { $exists: false } } },
+              { $match: { closedOn: { $exists: closed } } },
               { $match: { 'seller.username':  req.session.username } }
             ],
             { maxTimeMS: 60000, allowDiskUse: true }
@@ -106,7 +110,7 @@ export default  async (req,res,next) => {
                   buyer: { username: 1, fullName: 1 }
                 }
               },
-              { $match: { closedOn: { $exists: false } } },
+              { $match: { closedOn: { $exists: closed } } },
               { $match: { 'buyer.username': req.session.username } }
             ],
             { maxTimeMS: 60000, allowDiskUse: true }

@@ -1,3 +1,6 @@
+//Don't forget to add cron job during deployment
+
+
 //import important dependencies
 import express from 'express'
 import session from 'express-session';
@@ -55,6 +58,11 @@ import {BusStopModel} from './model/index.js'
 import fetchNearbyBusStops from './helper/busStop/fetchNearbyBusStops.js';
 import findNearbyUsers from './routes/BusStop/findNearbyUsers.js';
 import findNearbyListingReccomendations from './routes/BusStop/findNearbyListingReccomendations.js';
+import fetchIncompleteChatReviews from './routes/ChatReview/fetchIncompleteChatReviews.js';
+import editIncompleteChatReviews from './routes/ChatReview/editIncompleteChatReviews.js';
+import CreatePointReward from './routes/PointReward/CreatePointReward.js';
+import fetchAvailableRewards from './routes/Reward/fetchAvailableRewards.js';
+import redeemReward from './routes/Reward/redeemReward.js';
 // import findNearbyListing from './routes/BusStop/findNearbyListing.js';
 
 // access the cert
@@ -244,8 +252,18 @@ app.delete("/chat/user/:username",NeedAuthenticate,deleteFailChat)
 // app.delete("/chat/user/:username/item",NeedAuthenticate,removeItem)
 
 
-// H. missing feature - rewards
+// H. chat reviews
+app.get("/chatReview",NeedAuthenticate,fetchIncompleteChatReviews)
+app.post("/chatReview",NeedAuthenticate,editIncompleteChatReviews)
+// need reviewId and textContent and Rating (max 5)
 
+// I. reward
+app.get("/reward",fetchAvailableRewards)
+app.post("/reward/:rewardName",NeedAuthenticate,redeemReward)
+
+
+//for adding data temporarily
+// app.post("/reward",CreatePointReward)
 
 
 //when the server is ended using CTRL+C

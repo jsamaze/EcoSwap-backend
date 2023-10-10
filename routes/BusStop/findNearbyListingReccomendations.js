@@ -151,6 +151,11 @@ export default  async (req,res,next) => {
                   },
                   { $limit: 5 }
                 ])
+                for (const index in recommendations) {
+                  let item = recommendations[index]
+                  item.photoURLs = await ItemModel.getImageURLsStatic(item.photoName);
+                  delete item.photoName 
+                }
             tempResult.push({
                 wishListItem: wishListItem,
                 recommendation : recommendations

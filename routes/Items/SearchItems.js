@@ -1,6 +1,6 @@
 import { ItemModel} from "../../model/index.js";
 
-var matchedFileds = ['tags','category','condition', "itemType", "username"]
+var matchedFields = ['tags','category','condition', "itemType", "username",'traded']
 
 export default  async (req,res,next) => {
     try {
@@ -10,7 +10,7 @@ export default  async (req,res,next) => {
 
 
             Object.keys(req.query).forEach(key => {
-                if (! matchedFileds.includes(key)){
+                if (! matchedFields.includes(key)){
                     res.status(400).send({
                         status:`${key} cannot be search on in item`
                     })
@@ -22,6 +22,10 @@ export default  async (req,res,next) => {
 
             if (toValidate.username){
                 delete toValidate.username
+            }
+
+            if (toValidate.traded){
+                delete toValidate.traded
             }
             // console.log(toValidate)
             if (Object.keys(toValidate).length>0){
@@ -91,16 +95,20 @@ export default  async (req,res,next) => {
         
 
             var itemType  = req.query.itemType ?? "Listed"
+            console.log(req.query)
+            var traded = req.query.traded ?? "false"
+            traded = (traded.toLowerCase() == "true" ) ?? false
+            console.log(traded)
             aggregation.unshift({
                 $match : {
                     $and : [
                         {itemType : itemType},
-                        {done : {$exists : false}}
+                        {done : {$exists : traded}}
                     ]
                 }
             })
             //only perform text search when available
-            if (req.params.search){
+               if (req.params.search){
                 aggregation.unshift({
                     $search: {
                     index: 'default',
@@ -125,6 +133,10 @@ export default  async (req,res,next) => {
             if (req.query.username){
                 req.query["user.username"]= req.query.username
                 delete req.query.username
+            }
+
+            if (req.query.traded){
+                delete req.query.traded
             }
 
 
@@ -155,6 +167,7 @@ export default  async (req,res,next) => {
             res.send({
                 status : "Success",
                 data : result,
+                aggr : aggregation
             })
         
 
