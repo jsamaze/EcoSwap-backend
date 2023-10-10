@@ -19,29 +19,39 @@ export default  async (req,res,next) => {
             ...userToSend,
             ...reviewInfo
         }
+        var netTransact = await fetchNetPoints(user.username)
+        var accTransact = await fetchAccumulatedPoints(user.username)
+
+        switch (true){
+            case accTransact.totalAccPts < 100:
+                var tier = "Green"
+                break;
+            case accTransact.totalAccPts < 300:
+                var tier = "Silver"
+                break;
+            case accTransact.totalAccPts < 500:
+                var tier = "Gold"
+                break;
+            default:
+                var tier = "Superstar"
+                break
+        }
+
 
         if (req.session.username == user.username){
-            var accTransact = await fetchAccumulatedPoints(user.username)
-            var netTransact = await fetchNetPoints(user.username)
-            switch (true){
-                case accTransact.totalAccPts < 100:
-                    var tier = "Green"
-                    break;
-                case accTransact.totalAccPts < 300:
-                    var tier = "Silver"
-                    break;
-                case accTransact.totalAccPts < 500:
-                    var tier = "Gold"
-                    break;
-                default:
-                    var tier = "Superstar"
-                    break
-            }
+
             userToSend = {
                 ...userToSend,
                 accumulatedPoints : accTransact.totalAccPts,
                 netPoints : netTransact.totalNetPts,
                 pointTransactions : netTransact.transactions,
+                tier
+            }
+        } else {
+            userToSend = {
+                ...userToSend,
+                accumulatedPoints : accTransact.totalAccPts,
+                netPoints : netTransact.totalNetPts,
                 tier
             }
         }
