@@ -9,14 +9,21 @@ export default  async (req,res,next) => {
         if (req.body && Object.keys(req.body).length>0){
             await checkItemOwnership(req.session.username,req.params.id)
             
-            Object.keys(req.body).forEach(key => {
-                if (! approvedAttributes.includes(key)){
-                    res.status(400).send({
-                        status:`${key} cannot be set in listed item`
-                    })
-                    return;
-                }
-            });
+            try{
+                Object.keys(req.body).forEach(key => {
+                    if (! approvedAttributes.includes(key)){
+                            throw new Error(`${key} cannot be set in User`)
+    
+                        
+                    }
+                    });        
+            } catch(e){
+                res.status(400).send({
+                    status:`Invalid input`,
+                    problem:e.message
+                })
+                return;
+            }
     
             try{
                 await ItemModel.validate(req.body,Object.keys(req.body))

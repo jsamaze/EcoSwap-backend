@@ -2,6 +2,9 @@ import { UserModel } from "../../model/index.js";
 
 export default  async (req,res,next) => {
     try {
+        if (!req.body.password){
+            throw new Error("Please give a password")
+        }
         var user = await UserModel.findOne({ username: req.body.username });
         if (user == null){
             user = await UserModel.findOne({ email: req.body.username });
@@ -24,19 +27,21 @@ export default  async (req,res,next) => {
                     req.session.save(function (err) {
                         if (err) return next(err)
                         res.status(200).send({
-                            status : "Success"
+                            status : "Success",
+                            username : user.username,
+                            userId : user._id
                         })
                     })
                 })
             } else {
                 res.status(401).send({
-                    status : "unable to authenticate"
+                    status : "fail",
+                    problem : "unable to authenticate"
                 })
             }
         });
           
     } catch (e){
-        console.log(e);
         res.status(500).send({
             status : "failed retrieving user",
             problem : e.message

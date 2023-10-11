@@ -2,7 +2,7 @@ import { UserModel } from "../../model/index.js";
 
 export default async (req,res) => {
     try {
-        var user = await UserModel.findOne({ username: req.session.username });
+        var user = await UserModel.findOne({ username: req.body.username });
 
         if (user.checkOTP(req.body.otp)){
             user.otp=undefined

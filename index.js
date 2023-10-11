@@ -164,19 +164,27 @@ app.get("/test", (req,res)=>{
 app.post("/user/register", Register)
 app.post("/user/login", AlreadyAuthenticate,Login)
 app.get('/user/logout',NeedAuthenticate, Logout)
-app.get('/user/generateOTP',(req,res)=>{
+app.get('/user/generateOTP',async (req,res)=>{ 
   if (!( req.session.username ?? req.query.username)){
     res.status(400).send({
       status : "Not logged in and not passed in the username in query"
     })
+  } 
+  try {
+    await generateOTP(req.session.username ?? req.query.username )
+  } catch (e){ 
+    res.status(500).send({
+      status:"Failure",
+      problem : e.message
+    }) 
+    return;
   }
-  generateOTP(req.session.username ?? req.query.username )
   res.send({
     status:"Success - check your email"
   })
 })
-app.post('/user/confirmPassword',NeedAuthenticate,ConfirmPassword)
-app.post("/user/confirmEmail",NeedAuthenticate,ConfirmEmail)
+app.post('/user/confirmPassword',ConfirmPassword)
+app.post("/user/confirmEmail",ConfirmEmail)
 
 app.get('/user/:username',FetchUser)
 app.patch('/user/',NeedAuthenticate,UpdateUser)
