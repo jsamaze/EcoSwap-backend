@@ -8,6 +8,7 @@ import {ItemChatSchema} from "./ItemChatSchema.js"
 import {ChatReviewSchema} from "./ChatReviewSchema.js"
 import {PointChoiceSchema} from "./PointChoiceSchema.js"
 import {PointTransactionSchema} from "./PointTransactionSchema.js"
+import { ItemLikeSchema } from "./ItemLikeSchema.js";
 
 
 export let UserModel = model("user", UserSchema);
@@ -34,3 +35,4 @@ export let PointRewardModel = PointChoiceModel.discriminator('pointReward',new S
     }
 }))
 export let PointTransactionModel = model("pointTransaction", PointTransactionSchema)
+export let ItemLikeModel = model("itemLike",ItemLikeSchema)

@@ -63,6 +63,10 @@ import editIncompleteChatReviews from './routes/ChatReview/editIncompleteChatRev
 import CreatePointReward from './routes/PointReward/CreatePointReward.js';
 import fetchAvailableRewards from './routes/Reward/fetchAvailableRewards.js';
 import redeemReward from './routes/Reward/redeemReward.js';
+import fetchTransactions from './routes/Reward/fetchTransactions.js';
+import createItemLike from './routes/ItemLike/createItemLike.js';
+import deleteItemLike from './routes/ItemLike/deleteItemLike.js';
+import fetchUserLikes from './routes/ItemLike/fetchUserLikes.js';
 // import findNearbyListing from './routes/BusStop/findNearbyListing.js';
 
 // access the cert
@@ -260,10 +264,16 @@ app.post("/chatReview",NeedAuthenticate,editIncompleteChatReviews)
 // I. reward
 app.get("/reward",fetchAvailableRewards)
 app.post("/reward/:rewardName",NeedAuthenticate,redeemReward)
-
+app.get("/reward/transactions",NeedAuthenticate, fetchTransactions)
 
 //for adding data temporarily
 // app.post("/reward",CreatePointReward)
+
+// J. likes
+
+app.post("/item/like/:itemId",NeedAuthenticate,createItemLike)
+app.delete("/item/like/:itemId",NeedAuthenticate,deleteItemLike)
+app.get("/items/liked",NeedAuthenticate,fetchUserLikes)
 
 
 //when the server is ended using CTRL+C

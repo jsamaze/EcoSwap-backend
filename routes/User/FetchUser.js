@@ -37,24 +37,14 @@ export default  async (req,res,next) => {
                 break
         }
 
-
-        if (req.session.username == user.username){
-
-            userToSend = {
-                ...userToSend,
-                accumulatedPoints : accTransact.totalAccPts,
-                netPoints : netTransact.totalNetPts,
-                pointTransactions : netTransact.transactions,
-                tier
-            }
-        } else {
-            userToSend = {
-                ...userToSend,
-                accumulatedPoints : accTransact.totalAccPts,
-                netPoints : netTransact.totalNetPts,
-                tier
-            }
+        userToSend = {
+            ...userToSend,
+            accumulatedPoints : accTransact.totalAccPts,
+            netPoints : netTransact.totalNetPts,
+            tier
         }
+
+
 
 
     

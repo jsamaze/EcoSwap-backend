@@ -1,4 +1,4 @@
-import { ItemModel, ViewModel } from "../../model/index.js";
+import { ItemLikeModel, ItemModel, ViewModel } from "../../model/index.js";
 
 const betweenViewDuration = 300000 //milliseconds
 export default  async (req,res,next) => {
@@ -54,16 +54,57 @@ export default  async (req,res,next) => {
         var itemToSend =  item.toObject();
         itemToSend.photoURL = await item.getImageURLs();
         delete itemToSend.photoName
+
+    } catch (e){
+
+    }
+
+    try {
+        var likesCount = await ItemLikeModel.aggregate([
+            {
+                $match :             {
+                    item : itemToSend._id
+                }
+            },
+            {
+                $count : "noOfLikes"
+            }
+        ])
+
+        console.log(likesCount)
+
+
+        itemToSend.noOfLikes = likesCount[0].noOfLikes
+        
+
+    } catch (e){
+        res.status(500).send({
+            status:"fail to check number of likes",
+            data:item, //even if photo fetch error still return smth
+            problem:e.message
+        })
+    }
+
+    try {
+        if (req.session.username){
+            var like = await ItemLikeModel.findOne({
+                user : req.session.user_id,
+                item : item._id
+            })
+
+
+        itemToSend.userLike = !!like
+        }
+
         res.status(200).send({
             status:"success",
             data:itemToSend
         })
     } catch (e){
         res.status(500).send({
-            status:"photo URL fetch error",
+            status:"fail to check whether logged in user likes it",
             data:item, //even if photo fetch error still return smth
             problem:e.message
         })
     }
-
 }
