@@ -1,24 +1,30 @@
 import generateEmailOTP from "../../helper/generateOTP.js";
-import { UserModel } from "../../model/index.js";
+import { BusStopModel, UserModel } from "../../model/index.js";
 
 const approvedAttributes = ["fullName", "preferredBusStop","about","email"]
 
 export default  async (req,res,next) => {
     try {
-        console.log(req.body)
 
         if (req.body && Object.keys(req.body).length>0){ //if body not empty
 
 
-        try{
-                Object.keys(req.body).forEach(key => {
-                    if (! approvedAttributes.includes(key)){
-                            throw new Error(`${key} cannot be set in User`)
-    
-                        
-                    }
-                });        
-        } catch(e){
+        try {
+            Object.keys(req.body).forEach(key => {
+                if (! approvedAttributes.includes(key)){
+                    throw new Error(`${key} cannot be set in User`)  
+                }
+            });   
+            if (Object.keys(req.body).includes("preferredBusStop")){
+                var busStop = await BusStopModel.findOne({BusStopCode : req.body.preferredBusStop})
+                console.log(busStop)
+                if (!busStop) {
+                    throw new Error("Bus stop does not exist")
+                }
+            }
+            await UserModel.validate(req.body,Object.keys(req.body))
+
+        } catch (e){
             res.status(400).send({
                 status:`Invalid input`,
                 problem:e.message
@@ -26,17 +32,9 @@ export default  async (req,res,next) => {
             return;
         }
 
-
-    
-            try{
-                await UserModel.validate(req.body,Object.keys(req.body))
-            } catch(e){
-                res.status(400).send({
-                    status:`Invalid input`,
-                    problem:e.message
-                })
-                return;
-            }
+        if (Object.keys(req.body).includes("email")){
+            req.body.emailVerified = false
+        }
      
             await UserModel.updateOne({username:req.session.username},req.body)
     

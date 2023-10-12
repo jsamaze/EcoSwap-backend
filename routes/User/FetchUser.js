@@ -5,7 +5,7 @@ import { UserModel } from "../../model/index.js";
 
 export default  async (req,res,next) => {
     try {
-        var user = await UserModel.findOne({ username: req.params.username }, "fullName username email preferredBusStop about photoName");
+        var user = await UserModel.findOne({ username: req.params.username }, "fullName username email preferredBusStop about photoName emailVerified");
         
         if (!user){
             throw new Error("No such user")
