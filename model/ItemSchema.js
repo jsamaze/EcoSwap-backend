@@ -71,7 +71,7 @@ export let ItemSchema = new Schema ({
                 result = await Promise.all(
                     this.toObject().photoName.map(async photoName=>{
                         return await s3.getSignedUrl('getObject',{
-                            Bucket:"ecoswap",
+                            Bucket:process.env.S3_BUCKET,
                             Key:photoName
                         })
                     })
@@ -89,7 +89,7 @@ export let ItemSchema = new Schema ({
                 result = await Promise.all(
                     photoName.map(async photoNa=>{
                         return await s3.getSignedUrl('getObject',{
-                            Bucket:"ecoswap",
+                            Bucket:process.env.S3_BUCKET,
                             Key:photoNa
                         })
                     })

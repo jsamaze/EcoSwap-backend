@@ -3,6 +3,7 @@ import validator from "validator";
 import { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import {s3} from '../global/S3.js'
+import mongooseUniqueValidator from "mongoose-unique-validator";
 
 const saltRounds=10;
 
@@ -44,7 +45,7 @@ let UserSchema = new Schema ({
         required:true,
     },
     otp : {
-        type : Number
+        type : String
     },
     about: {
         type: String,
@@ -62,19 +63,22 @@ let UserSchema = new Schema ({
                 cb(null,isMatch);
                 })
             },
+
         async getImageURL (){
                 var url = ""
                 if (this.photoName){
                     url = await s3.getSignedUrl('getObject',{
-                        Bucket:"ecoswap",
+                        Bucket:process.env.S3_BUCKET,
                         Key:this.photoName
                     })
                 }
 
                 return url
             },
-        checkOTP(otp){
-            return this.otp == otp && this.otpValidUntil.getDate() <= Date.now()
+        async checkOTP(candidateOTP){
+
+            var match = await bcrypt.compare(candidateOTP.toString(), this.otp)
+            return match && this.otpValidUntil.getDate() <= Date.now()
         },
         
         },
@@ -82,22 +86,29 @@ let UserSchema = new Schema ({
         timestamps:true
 })
 
-UserSchema.pre("save",function (next) {
+UserSchema.pre("save", async function (next) {
     var user = this;
+    console.log(user.isModified('password'))
+    if (user.isModified('password')&& user.password){
+        var salt = await bcrypt.genSalt(saltRounds)
+        var hash = await bcrypt.hash(user.password,salt)
 
-    if (!user.isModified('password')){
-        return next()
+        user.password = hash
     }
 
-    bcrypt.genSalt(saltRounds, function(err,salt){
-        if (err) return next(err);
+    console.log(user.isModified('otp'))
 
-        bcrypt.hash (user.password, salt, function(err,hash) {
-            if (err) return next(err);
-            user.password=hash;
-            next();
-        })
-    })
+    if(user.isModified('otp') && user.otp){
+        var salt = await bcrypt.genSalt(saltRounds)
+        var hash = await bcrypt.hash(user.otp,salt)
+
+        user.otp = hash
+    }
+
+    return next();
+
 })
+
+UserSchema.plugin(mongooseUniqueValidator,{ message: 'Error, expected {PATH} to be unique.' })
 
 export {UserSchema};
