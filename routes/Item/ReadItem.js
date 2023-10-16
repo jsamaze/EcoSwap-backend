@@ -56,7 +56,8 @@ export default  async (req,res,next) => {
         delete itemToSend.photoName
 
     } catch (e){
-
+        console.log("Issue with updating image URL")
+        console.log(e);
     }
 
     try {
@@ -83,6 +84,7 @@ export default  async (req,res,next) => {
             data:item, //even if photo fetch error still return smth
             problem:e.message
         })
+        return;
     }
 
     try {
