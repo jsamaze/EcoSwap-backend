@@ -70,12 +70,13 @@ import fetchUserLikes from './routes/ItemLike/fetchUserLikes.js';
 // import findNearbyListing from './routes/BusStop/findNearbyListing.js';
 
 // access the cert
-const key = fs.readFileSync('./HTTPS/key.pem');
-const cert = fs.readFileSync('./HTTPS/cert.pem');
+// const key = fs.readFileSync('./HTTPS/key.pem');
+// const cert = fs.readFileSync('./HTTPS/cert.pem');
 
 //create the app
 const app = express();
-const server = https.createServer({key: key, cert: cert }, app);
+// const server = https.createServer({key: key, cert: cert }, app);
+const server = http.createServer(app)
 
 //integrate socket.io
 export const io = new Server(server, {
