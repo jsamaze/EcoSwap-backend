@@ -12,6 +12,7 @@ import fs from 'fs';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import { Server } from 'socket.io';
+import http from 'http'
 
 //import router function
 import Register from "./routes/User/Register.js"
