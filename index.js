@@ -148,9 +148,8 @@ mongoose.connection.on("connected", () => {
 mongoose.connection.on("error", (err) => {
 console.log("Database error:" + err);
 });
-console.log(process.env)
 // start the server
-server.listen( 8080, "0.0.0.0",() => {
+server.listen( process.env.PORT,() => {
     console.log(`Listening at localhost:${process.env.PORT}`)
 });
 
