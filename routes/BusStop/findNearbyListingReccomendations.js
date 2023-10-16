@@ -5,10 +5,10 @@ export default  async (req,res,next) => {
     try {
         // code same as find nearby users
         if (!req.query.radiusInKm){
-            throw new Error("Please specify radius in Km")
+          req.query.radiusInKm=5
         } else if (req.query.latitude && req.query.longitude){
-            var latitude = req.query.latitude
-            var longitude = req.query.longitude
+            var latitude = req.query.latitude 
+            var longitude = req.query.longitude 
         }else {
             var userCoordinates = await UserModel.aggregate( [
                 { $match: { username: req.session.username } },
@@ -29,9 +29,9 @@ export default  async (req,res,next) => {
                   }
                 }
               ])
-              userCoordinates = userCoordinates[0]
-              var latitude = userCoordinates.coordinates[1]
-              var longitude = userCoordinates.coordinates[0]
+              userCoordinates = userCoordinates.length > 0 ? userCoordinates[0]  : {}
+              var latitude = userCoordinates?.coordinates[1] ?? 1.287953
+              var longitude = userCoordinates?.coordinates[0] ?? 103.851784
         }
 
 

@@ -71,13 +71,14 @@ import fetchUserLikes from './routes/ItemLike/fetchUserLikes.js';
 // import findNearbyListing from './routes/BusStop/findNearbyListing.js';
 
 // access the cert
-// const key = fs.readFileSync('./HTTPS/key.pem');
-// const cert = fs.readFileSync('./HTTPS/cert.pem');
+// const key = fs.readFileSync('./HTTPS/key.pem'); //LOCAL
+// const cert = fs.readFileSync('./HTTPS/cert.pem'); //LOCAL
 
 //create the app
 const app = express();
-// const server = https.createServer({key: key, cert: cert }, app);
-const server = http.createServer(app)
+
+// const server = https.createServer({key: key, cert: cert }, app); //LOCAL
+const server = http.createServer(app)  //HEROKU
 
 //integrate socket.io
 export const io = new Server(server, {
@@ -110,7 +111,7 @@ var sessionMiddleware= session({
   cookie: {
     maxAge: 1000 * 60 * 60, // 1 hour
     // exposedHeaders: ['set-cookie']
-    // domain: process.env.DOMAIN,
+    // domain: process.env.DOMAIN, //To enable after full deployment
     sameSite:'none',
     secure:true,
     proxy : true,
