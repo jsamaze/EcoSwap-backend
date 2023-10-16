@@ -104,6 +104,7 @@ store.on('error', function(error) {
   console.log(error);
 });
   
+app.enable('trust proxy');
 var sessionMiddleware= session({
   secret: process.env.SECRET_SESSION,
   cookie: {
@@ -112,6 +113,7 @@ var sessionMiddleware= session({
     domain:`localhost`,
     sameSite:'none',
     secure:true,
+    proxy : true,
   },
   store: store,
   resave: false,
