@@ -75,7 +75,7 @@ export default  async (req,res,next) => {
         console.log(likesCount)
 
 
-        itemToSend.noOfLikes = likesCount[0].noOfLikes
+        itemToSend.noOfLikes = likesCount.length > 0 ? likesCount[0].noOfLikes : 0
         
 
     } catch (e){
