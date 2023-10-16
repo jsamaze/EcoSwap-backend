@@ -6,12 +6,16 @@ export default  async (req,res,next) => {
         // code same as find nearby users
         if (!req.query.radiusInKm){
           req.query.radiusInKm=5
-        } else if (req.query.latitude && req.query.longitude){
+        } 
+        if (req.query.latitude && req.query.longitude){
             var latitude = req.query.latitude 
             var longitude = req.query.longitude 
         }else {
             var userCoordinates = await UserModel.aggregate( [
-                { $match: { username: req.session.username } },
+                { $match: { 
+                  username: req.session.username,
+                  preferredBusStop : {$exists : true}
+                 } },
                 {
                   $lookup: {
                     from: 'busstops',
@@ -30,10 +34,11 @@ export default  async (req,res,next) => {
                 }
               ])
               userCoordinates = userCoordinates.length > 0 ? userCoordinates[0]  : {}
-              var latitude = userCoordinates?.coordinates[1] ?? 1.287953
-              var longitude = userCoordinates?.coordinates[0] ?? 103.851784
+              var coordinates = userCoordinates?.coordinates ?? [103.851784,1.287953]
+              var [longitude,latitude ]= coordinates
         }
 
+        console.log(latitude,longitude)
 
         var nearbyBusStops = await fetchNearbyBusStops(latitude,longitude,req.query.radiusInKm);
         var nearbyBusStopCodes = nearbyBusStops.map(e=>e.BusStopCode)
