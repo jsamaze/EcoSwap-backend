@@ -22,9 +22,20 @@ export default  async (req,res,next) => {
                     throw new Error("Bus stop does not exist")
                 }
             }
+
+            if(req.body.email){
+                var email = req.body.email
+                delete req.body.email
+            }
+
             await UserModel.validate(req.body,Object.keys(req.body))
 
+            if(email){
+                req.body.email = email;
+            }
+
         } catch (e){
+            console.log(e)
             res.status(400).send({
                 status:`Invalid input`,
                 problem:e.message

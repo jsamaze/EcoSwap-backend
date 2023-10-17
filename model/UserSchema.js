@@ -22,8 +22,8 @@ let UserSchema = new Schema ({
     email :  {
         type: String,
         trim: true,
-        lowercase: true,
-        unique: true,
+        // lowercase: true,
+        index : {unique : true},
         required: 'Email address is required',
         validate: [validator.isEmail, 'Please fill a valid email address'],    
     },
@@ -109,6 +109,6 @@ UserSchema.pre("save", async function (next) {
 
 })
 
-UserSchema.plugin(mongooseUniqueValidator,{ message: 'Error, expected {PATH} to be unique.' })
+UserSchema.plugin(mongooseUniqueValidator, { message: 'Error, expected {PATH} to be unique.' })
 
 export {UserSchema};
