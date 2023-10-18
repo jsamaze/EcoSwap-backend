@@ -130,7 +130,7 @@ io.engine.use(sessionMiddleware);
 app.use(express.json());
 app.use(cors({
   credentials: true,
-  origin: [process.env.FRONTEND_URL,  /\.github\.io$/], // must be same as frontend
+  origin: [process.env.FRONTEND_URL,  /\.azurestaticapps\.net$/], // must be same as frontend
   exposedHeaders: ['set-cookie']
 }));
 
