@@ -83,7 +83,7 @@ const server = http.createServer(app)  //HEROKU
 //integrate socket.io
 export const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL,
+    origin: [process.env.FRONTEND_URL, /\.github\.io$/],
     credentials:true,
       
   }, connectionStateRecovery: {
