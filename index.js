@@ -131,7 +131,7 @@ io.engine.use(sessionMiddleware);
 app.use(express.json());
 app.use(cors({
   credentials: true,
-  origin: [process.env.FRONTEND_URL,  /\.herokuapp\.com$/,/\.ecoswap\.space$/], // must be same as frontend
+  origin: [process.env.FRONTEND_URL,  /\.herokuapp\.com$/,"http://www.ecoswap.space"], // must be same as frontend
   exposedHeaders: ['set-cookie']
 }));
 
