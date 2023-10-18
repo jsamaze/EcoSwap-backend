@@ -255,6 +255,8 @@ app.get("/busStop/nearbyListingsRecommended",NeedAuthenticate,findNearbyListingR
 
 // G. Chat API
 
+// known issue - if too fast clicking the checkmark, will cause an error
+
 app.get("/chat/user/:username",NeedAuthenticate,fetchOneChat) //one chats //tested
 app.get("/chat",NeedAuthenticate,fetchChats) //recent chats
 app.post("/chat/user/:username",NeedAuthenticate, createChat)  //put item in body // tested
