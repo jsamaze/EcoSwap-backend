@@ -83,7 +83,7 @@ const server = http.createServer(app)  //HEROKU
 //integrate socket.io
 export const io = new Server(server, {
   cors: {
-    origin: [process.env.FRONTEND_URL,  /\.herokuapp\.com$/],
+    origin: [process.env.FRONTEND_URL,  /\.herokuapp\.com$/, /\.ecoswap\.space$/ ],
     credentials:true,
       
   }, connectionStateRecovery: {
@@ -113,7 +113,7 @@ var sessionMiddleware= session({
     // exposedHeaders: ['set-cookie']
     // domain: process.env.DOMAIN, //To enable after full deployment
     sameSite:'none',
-    // domain : "ecoswap-frontendtest2-22521b1b6ebc.herokuapp.com",
+    domain : "ecoswap.space", // enable for final deployment
     secure :true,
     proxy : true,
   },
