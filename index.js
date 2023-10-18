@@ -112,7 +112,7 @@ var sessionMiddleware= session({
     maxAge: 1000 * 60 * 60, // 1 hour
     // exposedHeaders: ['set-cookie']
     // domain: process.env.DOMAIN, //To enable after full deployment
-    // sameSite:'none',
+    sameSite:'none',
     domain : "ecoswap-frontendtest2-22521b1b6ebc.herokuapp.com",
     secure :true,
     proxy : true,
