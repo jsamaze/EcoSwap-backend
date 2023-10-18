@@ -113,7 +113,7 @@ var sessionMiddleware= session({
     // exposedHeaders: ['set-cookie']
     // domain: process.env.DOMAIN, //To enable after full deployment
     sameSite:'none',
-    domain : "ecoswap-frontendtest2-22521b1b6ebc.herokuapp.com",
+    // domain : "ecoswap-frontendtest2-22521b1b6ebc.herokuapp.com",
     secure :true,
     proxy : true,
   },
