@@ -112,8 +112,9 @@ var sessionMiddleware= session({
     maxAge: 1000 * 60 * 60, // 1 hour
     // exposedHeaders: ['set-cookie']
     // domain: process.env.DOMAIN, //To enable after full deployment
-    sameSite:'none',
-    secure:true,
+    // sameSite:'none',
+    domain : "herokuapp.com",
+    secure :true,
     proxy : true,
   },
   store: store,
