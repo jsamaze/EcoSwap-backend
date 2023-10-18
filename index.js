@@ -83,7 +83,7 @@ const server = http.createServer(app)  //HEROKU
 //integrate socket.io
 export const io = new Server(server, {
   cors: {
-    origin: [process.env.FRONTEND_URL,  /\.azurestaticapps\.net$/],
+    origin: [process.env.FRONTEND_URL,  /\.herokuapp\.com$/],
     credentials:true,
       
   }, connectionStateRecovery: {
@@ -130,7 +130,7 @@ io.engine.use(sessionMiddleware);
 app.use(express.json());
 app.use(cors({
   credentials: true,
-  origin: [process.env.FRONTEND_URL,  /\.azurestaticapps\.net$/], // must be same as frontend
+  origin: [process.env.FRONTEND_URL,  /\.herokuapp\.com$/], // must be same as frontend
   exposedHeaders: ['set-cookie']
 }));
 
