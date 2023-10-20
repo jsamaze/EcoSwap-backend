@@ -50,16 +50,19 @@ export default async function  (req, res, next) {
             }
             },
             {
-            $project: {
-                user: {
-                email: 0,
-                password: 0,
-                photoName: 0,
-                preferredBusStop: 0,
-                emailVerified: 0,
-                __v: 0
+                $project: {
+                    user: {
+                    email: 0,
+                    password: 0,
+                    photoName: 0,
+                    preferredBusStop: 0,
+                    emailVerified: 0,
+                    __v: 0,
+                    otp : 0,
+                    otpValidUntil : 0,
+                    about:0,
+                    }
                 }
-            }
             },
         { $sort : {"views" : -1}}
     ]

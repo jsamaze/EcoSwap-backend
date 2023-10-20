@@ -87,7 +87,10 @@ export default  async (req,res,next) => {
                     photoName: 0,
                     preferredBusStop: 0,
                     emailVerified: 0,
-                    __v: 0
+                    __v: 0,
+                    otp : 0,
+                    otpValidUntil : 0,
+                    about:0,
                     }
                 }
                 }
