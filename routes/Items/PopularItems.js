@@ -68,6 +68,12 @@ export default async function  (req, res, next) {
         aggregation.push({
             $limit : 10
         })
+    } else {
+        aggregation.push({
+            $match : {
+                'user.username' : {$ne : req.session.username}
+            }
+        })
     }
     var result = await ItemModel.aggregate(aggregation);
 
@@ -83,7 +89,7 @@ export default async function  (req, res, next) {
     res.send({
         status : "Success",
         data : result,
-        pipeline : aggregation
+        // pipeline : aggregation
     })
 
 }

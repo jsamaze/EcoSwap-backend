@@ -156,7 +156,7 @@ console.log("Database error:" + err);
 });
 // start the server
 server.listen( process.env.PORT || 1234,() => {
-    console.log(`Listening at localhost:${process.env.PORT}`)
+    console.log(`Listening at localhost:${process.env.PORT || 1234}`)
 });
 
 // the routes the server have
