@@ -139,7 +139,9 @@ export default  async (req,res,next) => {
                 delete req.query.traded
             }
 
-            req.query['user.username'] = {$ne : req.session.username}
+            if (req.query.includeOwn == 'true'){
+                req.query['user.username'] = {$ne : req.session.username}
+            }
 
 
             aggregation.push({

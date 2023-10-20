@@ -159,6 +159,8 @@ All the type are String
 | Data type | `WishList`/`Listed` | String | `ObjectId` referencing user | String | `Electronics`/`Fashion`/ `Furniture`/`Kitchenware` | `old`/`new` | `Array` of `String`
 `POST /item` | :heavy_check_mark: <br> ***by query e.g. `type: Listed`***|:heavy_check_mark: |:x: <br> automatic|:heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:|
 `PATCH /item/:id`| :x:|:heavy_check_mark: |:x: |:heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:|
+
+>> `includeOwn` give string `'true'`
 ### Response body in data - `GET /item/:id`
 
 ```json
