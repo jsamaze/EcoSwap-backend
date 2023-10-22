@@ -2,6 +2,7 @@ import checkItemOwnership from "../../../helper/checkItemOwnership.js";
 import retrieveChat from "../../../helper/chat/retrieveChat.js";
 import { ChatModel, ItemChatModel, UserModel } from "../../../model/index.js";
 import { io } from "../../../index.js";
+import transporter from "../../../helper/transporter.js";
 
 export default  async (req,res,next) => {
     try {
@@ -58,5 +59,18 @@ export default  async (req,res,next) => {
             status : "failed to create chat",
             problem : e.message
         });
+    }
+
+    try {
+        transporter.sendMail({
+            from: process.env.EMAIL,
+            to: seller.email,
+            subject: 'EcoSwap - New Chat',
+            html:  `Good news! ${req.session.username} is interested in ${item.itemName}<br>
+            
+                    <h2>Click <a href='${process.env.FRONTEND_URL}'>here</a> to start chatting now!</h2>`
+        })
+    } catch (e){
+        console.log(e)
     }
 }
