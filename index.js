@@ -71,14 +71,14 @@ import fetchUserLikes from './routes/ItemLike/fetchUserLikes.js';
 // import findNearbyListing from './routes/BusStop/findNearbyListing.js';
 
 // access the cert
-// const key = fs.readFileSync('./HTTPS/key.pem'); //LOCAL
-// const cert = fs.readFileSync('./HTTPS/cert.pem'); //LOCAL
+const key = fs.readFileSync('./HTTPS/key.pem'); //LOCAL
+const cert = fs.readFileSync('./HTTPS/cert.pem'); //LOCAL
 
 //create the app
 const app = express();
 
-// const server = https.createServer({key: key, cert: cert }, app); //LOCAL
-const server = http.createServer(app)  //HEROKU
+const server = https.createServer({key: key, cert: cert }, app); //LOCAL
+// const server = http.createServer(app)  //HEROKU
 
 //integrate socket.io
 export const io = new Server(server, {
@@ -113,7 +113,7 @@ var sessionMiddleware= session({
     // exposedHeaders: ['set-cookie']
     // domain: process.env.DOMAIN, //To enable after full deployment
     sameSite:'none',
-    domain : "ecoswap.space", // enable for final deployment
+    domain : "localhost", // enable for final deployment
     secure :true,
     proxy : true,
   },

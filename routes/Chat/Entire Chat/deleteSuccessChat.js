@@ -31,7 +31,7 @@ export default  async (req,res,next) => {
                     })
                 }
                 try {
-                    let id = (req.session.user_id == chatDoc.seller) ? chatDoc.buyer : chatDoc.seller
+                    let id = (req.session.user_id == chatDoc.seller.toString()) ? chatDoc.buyer : chatDoc.seller
                     var other = await UserModel.findById(id)
                         transporter.sendMail({
                             from: process.env.EMAIL,
