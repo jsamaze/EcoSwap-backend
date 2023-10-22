@@ -83,7 +83,7 @@ const server = http.createServer(app)  //HEROKU
 //integrate socket.io
 export const io = new Server(server, {
   cors: {
-    origin: [process.env.FRONTEND_URL,  /\.herokuapp\.com$/, /\.ecoswap\.space$/ ],
+    origin: [  /\.herokuapp\.com$/, /\.ecoswap\.space$/,"http://www.ecoswap.space", 'http://localhost:5173','http://localhost:5174'],
     credentials:true,
       
   }, connectionStateRecovery: {
@@ -131,7 +131,7 @@ io.engine.use(sessionMiddleware);
 app.use(express.json());
 app.use(cors({
   credentials: true,
-  origin: [  /\.herokuapp\.com$/,"http://www.ecoswap.space", 'http://localhost:5173','http://localhost:5174'], // must be same as frontend
+  origin: [  /\.herokuapp\.com$/, /\.ecoswap\.space$/,"http://www.ecoswap.space", 'http://localhost:5173','http://localhost:5174'], // must be same as frontend
   exposedHeaders: ['set-cookie']
 }));
 
