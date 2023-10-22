@@ -1,6 +1,6 @@
 import fetchNetPoints from "../../helper/point/fetchNetPoints.js"
 import { PointRewardModel, PointTransactionModel, UserModel } from "../../model/index.js"
-import transporter from '../../../helper/transporter.js'
+import transporter from '../../helper/transporter.js'
 
 
 export default  async (req,res,next) => {
