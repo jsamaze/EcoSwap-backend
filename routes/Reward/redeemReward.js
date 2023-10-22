@@ -1,5 +1,5 @@
 import fetchNetPoints from "../../helper/point/fetchNetPoints.js"
-import { PointRewardModel, PointTransactionModel } from "../../model/index.js"
+import { PointRewardModel, PointTransactionModel, UserModel } from "../../model/index.js"
 
 export default  async (req,res,next) => {
     try {
@@ -38,10 +38,23 @@ export default  async (req,res,next) => {
             })
 
             await transaction.save()
-
             res.send({
                 status : "Success"
             })
+            try {
+                var user = await UserModel.findOne({username : req.session.username})
+                transporter.sendMail({
+                    from: process.env.EMAIL,
+                    to: user.email,
+                    subject: 'EcoSwap - Reward has arrived',
+                    html:  `Congratulations! You have chosen to redeem ${Math.abs(reward.points)} points for ${reward.prizeTitle}
+                            <p>Please present the following code to any branch of the shop</p>
+                            <h1>EMPTY - FOR DEMONSTRATION PURPOSE ONLY</h1>`
+                })
+            } catch (error) {
+                console.log(e)
+                console.log("Failed to send email")
+            }
         } else {
             throw new Error("insufficient points")
         }

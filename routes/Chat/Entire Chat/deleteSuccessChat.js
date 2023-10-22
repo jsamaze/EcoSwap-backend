@@ -52,18 +52,29 @@ export default  async (req,res,next) => {
             // case 2 : one has agreeed but not the other
             if ((userRole == "buyer" &&chat.sellerClose) || (userRole == "seller" && chat.buyerClose) && !(chat.buyerClose && chat.sellerClose)){
                 // either one has already initiated but not both
+
+                var emailList = {
+                    seller : "<ul>",
+                    buyer : "<ul>"
+                }
                 for (const item of buyerItems){
                     let itemDoc = await ItemModel.findById(item._id);
                     itemDoc.done = new Date();
+                    emailList.seller += `<li>${itemDoc.itemName} || ${itemDoc.category }</li>`
                     await itemDoc.save()
                     await ItemChatModel.deleteMany({item : item._id})
                 }
                 for (const item of sellerItems){
                     let itemDoc = await ItemModel.findById(item._id);
                     itemDoc.done = new Date();
+                    emailList.buyer += `<li>${itemDoc.itemName} || ${itemDoc.category }</li>`
                     await itemDoc.save()
                     await ItemChatModel.deleteMany({item : item._id})
                 }
+
+                emailList.buyer+="</ul>"
+                emailList.seller+="</ul>"
+
                 var chatDoc = await ChatModel.findById(chat._id);
                 chatDoc.closedOn = new Date();
                 switch (true){
@@ -81,8 +92,6 @@ export default  async (req,res,next) => {
                 const choice = await PointChoiceModel.findOne({
                     rewardName : "trade"
                 })
-        
-        
         
                 var transaction = new PointTransactionModel({
                     user : chat.seller,
@@ -103,6 +112,43 @@ export default  async (req,res,next) => {
                     status:"endChatSuccess"
                 })
                 io.of("/").to(req.params.username).emit("endChatSuccess",req.session.username);
+
+                try {
+                    var seller = await UserModel.findOne({username: chat.seller})
+                    var buyer = await UserModel.findOne({username : chat.buyer})
+                    transporter.sendMail({
+                        from: process.env.EMAIL,
+                        to: seller.email,
+                        subject: 'EcoSwap - Successfully close a trade',
+                        html:  `Good news! Your trade with ${buyer.username} has been successful<br>
+                                You gained ${choice.points} points<br>
+
+                                <h3>${seller.username} has agreed to trade the following: </h3>
+                                ${emailList.seller}
+
+                                <h3>${buyer.username} has agreed to trade the following: </h3>
+                                ${emailList.buyer}
+
+                                <h2>Click <a href='${process.env.FRONTEND_URL}'>here</a> to make write a review for ${buyer.username}!</h2>`
+                    })
+                    transporter.sendMail({
+                        from: process.env.EMAIL,
+                        to: buyer.email,
+                        subject: 'EcoSwap - Successfully close a trade',
+                        html:  `Good news! Your trade with ${seller.username} has been successful<br>
+
+                                <h3>${seller.username} has agreed to trade the following: </h3>
+                                ${emailList.seller}
+
+                                <h3>${buyer.username} has agreed to trade the following: </h3>
+                                ${emailList.buyer}
+                                 You gained ${choice.points} points<br>
+                                <h2>Click <a href='${process.env.FRONTEND_URL}'>here</a> to make write a review for ${seller.username}!</h2>`
+                    })
+                } catch (e){
+                    console.log("Failed to send email")
+                    console.log(e)
+                }
 
             } else {
                 switch (true){
@@ -132,10 +178,25 @@ export default  async (req,res,next) => {
                             otherPerson = chat.seller.username;
                         }
                         await chatDoc.save();
+                        
                         res.send({
                             status : "requestEndChatSuccess"
                         })
                         io.of("/").to(otherPerson).emit("requestEndChatSuccess",req.session.username);
+                        try {
+                            var other = await UserModel.findOne({username: otherPerson})
+                                transporter.sendMail({
+                                    from: process.env.EMAIL,
+                                    to: other.email,
+                                    subject: 'EcoSwap - Request to close a trade',
+                                    html:  `Good news! ${req.session.username} wants to close the deal<br>
+                                    
+                                            <h2>Click <a href='${process.env.FRONTEND_URL}'>here</a> to make a discussion or discuss further with ${req.session.username}!</h2>`
+                                })
+                        } catch (e){
+                            console.log("Failed to send email")
+                            console.log(e)
+                        }
                         break;
                 }
             }
