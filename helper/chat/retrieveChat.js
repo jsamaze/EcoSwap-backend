@@ -49,8 +49,8 @@ export default async function (username1, username2){
           },
           {
             $project: {
-              seller: { username: 1, fullName: 1, _id:1 },
-              buyer: { username: 1, fullName: 1 ,_id :1},
+              seller: { username: 1, fullName: 1, _id:1, email:1 },
+              buyer: { username: 1, fullName: 1 ,_id :1, email:1},
               createdAt: 1,
               updatedAt: 1,
               messages: 1,

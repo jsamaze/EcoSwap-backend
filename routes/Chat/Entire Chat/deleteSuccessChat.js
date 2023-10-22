@@ -128,19 +128,17 @@ export default  async (req,res,next) => {
                 io.of("/").to(req.params.username).emit("endChatSuccess",req.session.username);
 
                 try {
-                    var seller = await UserModel.findOne({username: chat.seller})
-                    var buyer = await UserModel.findOne({username : chat.buyer})
                     transporter.sendMail({
                         from: process.env.EMAIL,
-                        to: seller.email,
+                        to: chat.seller.email,
                         subject: 'EcoSwap - Successfully close a trade',
-                        html:  `Good news! Your trade with ${buyer.username} has been successful<br>
+                        html:  `Good news! Your trade with ${chat.buyer.username} has been successful<br>
                                 You gained ${choice.points} points<br>
 
-                                <h3>${seller.username} has agreed to trade the following: </h3>
+                                <h3>${chat.seller.username} has agreed to trade the following: </h3>
                                 ${emailList.seller}
 
-                                <h3>${buyer.username} has agreed to trade the following: </h3>
+                                <h3>${chat.buyer.username} has agreed to trade the following: </h3>
                                 ${emailList.buyer}
 
                                 <h2>Click <a href='${process.env.FRONTEND_URL}'>here</a> to make write a review for ${buyer.username}!</h2>`
@@ -149,12 +147,12 @@ export default  async (req,res,next) => {
                         from: process.env.EMAIL,
                         to: buyer.email,
                         subject: 'EcoSwap - Successfully close a trade',
-                        html:  `Good news! Your trade with ${seller.username} has been successful<br>
+                        html:  `Good news! Your trade with ${chat.seller.username} has been successful<br>
 
-                                <h3>${seller.username} has agreed to trade the following: </h3>
+                                <h3>${chat.seller.username} has agreed to trade the following: </h3>
                                 ${emailList.seller}
 
-                                <h3>${buyer.username} has agreed to trade the following: </h3>
+                                <h3>${chat.buyer.username} has agreed to trade the following: </h3>
                                 ${emailList.buyer}
                                  You gained ${choice.points} points<br>
                                 <h2>Click <a href='${process.env.FRONTEND_URL}'>here</a> to make write a review for ${seller.username}!</h2>`
