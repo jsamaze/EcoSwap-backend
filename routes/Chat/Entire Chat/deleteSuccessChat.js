@@ -31,7 +31,7 @@ export default  async (req,res,next) => {
                     })
                 }
                 try {
-                    var other = await UserModel.findOne({username: (req.session.user_id == chatDoc.seller ? chatDoc.buyer : chatDoc.seller)})
+                    var other = await UserModel.findById(req.session.user_id == chatDoc.seller ? chatDoc.buyer : chatDoc.seller)
                         transporter.sendMail({
                             from: process.env.EMAIL,
                             to: other.email,
@@ -141,11 +141,11 @@ export default  async (req,res,next) => {
                                 <h3>${chat.buyer.username} has agreed to trade the following: </h3>
                                 ${emailList.buyer}
 
-                                <h2>Click <a href='${process.env.FRONTEND_URL}'>here</a> to make write a review for ${buyer.username}!</h2>`
+                                <h2>Click <a href='${process.env.FRONTEND_URL}'>here</a> to make write a review for ${chat.buyer.username}!</h2>`
                     })
                     transporter.sendMail({
                         from: process.env.EMAIL,
-                        to: buyer.email,
+                        to: chat.buyer.email,
                         subject: 'EcoSwap - Successfully close a trade',
                         html:  `Good news! Your trade with ${chat.seller.username} has been successful<br>
 
@@ -155,7 +155,7 @@ export default  async (req,res,next) => {
                                 <h3>${chat.buyer.username} has agreed to trade the following: </h3>
                                 ${emailList.buyer}
                                  You gained ${choice.points} points<br>
-                                <h2>Click <a href='${process.env.FRONTEND_URL}'>here</a> to make write a review for ${seller.username}!</h2>`
+                                <h2>Click <a href='${process.env.FRONTEND_URL}'>here</a> to make write a review for ${chat.seller.username}!</h2>`
                     })
                 } catch (e){
                     console.log("Failed to send email")
