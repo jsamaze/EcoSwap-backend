@@ -30,7 +30,20 @@ export default  async (req,res,next) => {
                         status : "reject closing chat because not initiated yet"
                     })
                 }
-
+                try {
+                    var other = await UserModel.findOne({username: (req.query.username == chatDoc.seller ? chatDoc.buyer : chatDoc.seller)})
+                        transporter.sendMail({
+                            from: process.env.EMAIL,
+                            to: other.email,
+                            subject: 'EcoSwap - Rejected from closing trade',
+                            html:  `${req.session.username} rejected your offer to close the deal<br>
+                            
+                                    <h2>Click <a href='${process.env.FRONTEND_URL}'>here</a> to continue chatting with ${req.session.username}!</h2>`
+                        })
+                } catch (e){
+                    console.log("Failed to send email")
+                    console.log(e)
+                }
                 return;
             }
 
@@ -61,14 +74,14 @@ export default  async (req,res,next) => {
                 for (const item of buyerItems){
                     let itemDoc = await ItemModel.findById(item._id);
                     itemDoc.done = new Date();
-                    emailList.seller += `<li>${itemDoc.itemName} || ${itemDoc.category }</li>`
+                    emailList.buyer += `<li>${itemDoc.itemName} || ${itemDoc.category }</li>`
                     await itemDoc.save()
                     await ItemChatModel.deleteMany({item : item._id})
                 }
                 for (const item of sellerItems){
                     let itemDoc = await ItemModel.findById(item._id);
                     itemDoc.done = new Date();
-                    emailList.buyer += `<li>${itemDoc.itemName} || ${itemDoc.category }</li>`
+                    emailList.seller += `<li>${itemDoc.itemName} || ${itemDoc.category }</li>`
                     await itemDoc.save()
                     await ItemChatModel.deleteMany({item : item._id})
                 }
