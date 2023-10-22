@@ -31,7 +31,7 @@ export default  async (req,res,next) => {
                     })
                 }
                 try {
-                    var other = await UserModel.findOne({username: (req.query.username == chatDoc.seller ? chatDoc.buyer : chatDoc.seller)})
+                    var other = await UserModel.findOne({username: (req.session.user_id == chatDoc.seller ? chatDoc.buyer : chatDoc.seller)})
                         transporter.sendMail({
                             from: process.env.EMAIL,
                             to: other.email,
