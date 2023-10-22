@@ -1,5 +1,4 @@
 import { UserModel } from "../../model/index.js";
-import transporter from "../../helper/transporter.js";
 import generateOTP from "../../helper/generateOTP.js";
 
 
