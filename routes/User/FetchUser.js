@@ -1,7 +1,7 @@
 import fetchCompletedChatReviews from "../../helper/chatReview/fetchCompletedChatReviews.js";
 import fetchAccumulatedPoints from "../../helper/point/fetchAccumulatedPoints.js";
 import fetchNetPoints from "../../helper/point/fetchNetPoints.js";
-import { UserModel } from "../../model/index.js";
+import { UserModel,BusStopModel } from "../../model/index.js";
 
 export default  async (req,res,next) => {
     try {
