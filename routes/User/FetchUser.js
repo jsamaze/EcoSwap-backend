@@ -11,7 +11,6 @@ export default  async (req,res,next) => {
             throw new Error("No such user")
         }
 
-        user.busStop = await BusStopModel.findOne({BusStopCode : user.preferredBusStop}).lean()
 
 
         var userToSend = user.toObject()
@@ -46,6 +45,9 @@ export default  async (req,res,next) => {
             netPoints : netTransact.totalNetPts,
             tier
         }
+
+        userToSend.busStop = await BusStopModel.findOne({BusStopCode : user.preferredBusStop}).lean()
+
 
 
 
