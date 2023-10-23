@@ -14,6 +14,7 @@ export default  async (req,res,next) => {
               res.status(400).send({
                 status:"Please login or specify a location"
               })
+              return;
             }
             var userCoordinates = await UserModel.aggregate( [
                 { $match: { username: req.session.username } },
