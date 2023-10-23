@@ -10,7 +10,10 @@ export default  async (req,res,next) => {
         if (!user){
             throw new Error("No such user")
         }
-        
+
+        user.busStop = await BusStopModel.findOne({BusStopCode : user.preferredBusStop}).lean()
+
+
         var userToSend = user.toObject()
         userToSend.imageURL = await user.getImageURL()
         var reviewInfo = await fetchCompletedChatReviews(req.params.username)
