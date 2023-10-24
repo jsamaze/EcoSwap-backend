@@ -32,7 +32,6 @@ export default  async (req,res,next) => {
                     username: 1,
                     coordinates:
                       '$preferredBusStops.loc.coordinates',
-                    busStopName : `$preferredBusStops.Description`
                   }
                 }
               ])
@@ -57,6 +56,7 @@ export default  async (req,res,next) => {
         },"fullName username email preferredBusStop about photoName").lean()
         result.forEach(e=>{
           e.loc = busStopMap.get(e.preferredBusStop).loc
+          e.busStopName =  busStopMap.get(e.preferredBusStop).Description
         })
 
         let finalResult = {}
