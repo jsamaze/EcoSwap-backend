@@ -203,6 +203,7 @@ export default  async (req,res,next) => {
         // })
 
         res.send(result)
+        return;
 
           
     } catch (e){
@@ -211,5 +212,6 @@ export default  async (req,res,next) => {
             status : "failed retrieving users",
             problem : e.message
         })
+        return;
     }
 }

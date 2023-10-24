@@ -174,6 +174,7 @@ app.get('/user/generateOTP',async (req,res)=>{
     res.status(400).send({
       status : "Not logged in and not passed in the username in query"
     })
+    return;
   } 
   try {
     await generateOTP(req.session.username ?? req.query.username )
@@ -233,6 +234,7 @@ app.get("/busStop/populate",async (req,res)=>{
     res.send({
       status:"successful"
     })
+    return;
   } catch(e){
     res.status(500).send({
       status:"failure",
@@ -245,8 +247,10 @@ app.get("/busStop/radius",async (req,res)=>{
   try {
     var result = await fetchNearbyBusStops(req.query.latitude,req.query.longitude,req.query.radiusInKm)
     res.send(result)
+    return;
   } catch (e){
     res.status(500).send(req.params)
+    return;
   }
 }) //latitude longitude radiusInKm
 // find users near you OR a specified location

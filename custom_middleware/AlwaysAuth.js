@@ -5,6 +5,7 @@ export default function  (req, res, next) {
             username : req.session.username,
             userId : req.session.user_id
         });
+        return;
     } else {
         next()
     }
