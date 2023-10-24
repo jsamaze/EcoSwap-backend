@@ -31,7 +31,8 @@ export default  async (req,res,next) => {
                   $project: {
                     username: 1,
                     coordinates:
-                      '$preferredBusStops.loc.coordinates'
+                      '$preferredBusStops.loc.coordinates',
+                    busStopName : `$preferredBusStops.Description`
                   }
                 }
               ])
