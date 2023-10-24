@@ -3,7 +3,8 @@ export default function  (req, res, next) {
         next();
     } else {
         res.status(401).send({
-            status : "Please login first"
+            status : "AuthFail",
+            problem : "Please login first"
         });
         return;
     }
