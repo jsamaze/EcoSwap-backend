@@ -20,36 +20,38 @@ export default  async (req,res,next) => {
         })
         return;
     }
-    try {
-        //additional logic to count people
-        console.log(item)
-        var view = await ViewModel.findOne({
-            user : req.session.user_id,
-            item : item.id
-        })
-
-        if (view) {
-            // a view entry exists
-            if (view.lastSeen.getTime()+betweenViewDuration <= Date.now()){
-                item.views++
-                view.lastSeen=Date.now();
-            }
-        } else {
-            // a view entry does not exist
-            view = new ViewModel({
-                user: req.session.user_id,
-                item : req.params.id,
+    if (req.session.username){
+        try {
+            //additional logic to count people
+            console.log(item)
+            var view = await ViewModel.findOne({
+                user : req.session.user_id,
+                item : item.id
             })
-            item.views++
+    
+            if (view) {
+                // a view entry exists
+                if (view.lastSeen.getTime()+betweenViewDuration <= Date.now()){
+                    item.views++
+                    view.lastSeen=Date.now();
+                }
+            } else {
+                // a view entry does not exist
+                view = new ViewModel({
+                    user: req.session.user_id,
+                    item : req.params.id,
+                })
+                item.views++
+            }
+    
+            await item.save();
+            await view.save();
+        } catch (e){
+            console.log("Issue with updating view")
+            console.log(e);
         }
-
-        await item.save();
-        await view.save();
-    } catch (e){
-        console.log("Issue with updating view")
-        console.log(e);
+    
     }
-
     try {
         var itemToSend =  item.toObject();
         itemToSend.photoURL = await item.getImageURLs();
