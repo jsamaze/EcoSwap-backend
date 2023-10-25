@@ -100,7 +100,7 @@ export default  async (req,res,next) => {
                           },
                           {
                             text: {
-                              query: wishListItem.tags.length == 0 ? "" : wishListItem.tags,
+                              query: wishListItem.tags.length == 0 ? "item" : wishListItem.tags,
                               path: 'tags'
                             }
                           }
