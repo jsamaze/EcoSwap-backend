@@ -39,7 +39,7 @@ export default async (req,res) => {
 
         res.status(200).send ({
             status:"success",
-            id : item._id
+            id : item
         })
 
     } catch (e){
