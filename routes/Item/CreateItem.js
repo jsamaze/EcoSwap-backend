@@ -23,18 +23,25 @@ export default async (req,res) => {
 
         await item.save();
 
-        const choice = await PointChoiceModel.findOne({
-            rewardName : "addListedItem"
-        })
+        try {
+            const choice = await PointChoiceModel.findOne({
+                rewardName : "addListedItem"
+            })
+    
+    
+    
+            const transaction = new PointTransactionModel({
+                user : req.session.user_id,
+                choice: choice._id
+            })
+    
+            await transaction.save()
+    
+        } catch (error) {
+           console.log("Unable to add transactions")
+           console.log(error) 
+        }
 
-
-
-        const transaction = new PointTransactionModel({
-            user : req.session.user_id,
-            choice: choice._id
-        })
-
-        await transaction.save()
 
 
         res.status(200).send ({
