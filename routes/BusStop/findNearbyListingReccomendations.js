@@ -64,6 +64,7 @@ export default  async (req,res,next) => {
 
         var tempResult = []
         for (const wishListItem of wishListItems){
+
             let recommendations = await ItemModel.aggregate([
 
                 {
@@ -99,7 +100,7 @@ export default  async (req,res,next) => {
                           },
                           {
                             text: {
-                              query: wishListItem.tags,
+                              query: wishListItem.tags.length == 0 ? "" : wishListItem.tags,
                               path: 'tags'
                             }
                           }
