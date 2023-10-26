@@ -122,11 +122,12 @@ export default  async (req,res,next) => {
                     text: {
                         query: req.params.search,
                         path: [
-                        'name',
-                        'desc',
+                        'itemName',
+                        'itemType',
                         'category',
                         'condition',
-                        'tags'
+                        'tags',
+                        'description',
                         ]
                     }
                     }
