@@ -1,6 +1,6 @@
 import checkItemOwnership from "../../helper/checkItemOwnership.js";
 import { ItemChatModel, ItemModel, PointChoiceModel, PointTransactionModel, ViewModel } from "../../model/index.js";
-
+import {s3} from '../global/S3.js'
 
 export default  async (req,res,next) => {
     try {
