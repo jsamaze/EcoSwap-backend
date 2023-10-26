@@ -151,6 +151,13 @@ export default  async (req,res,next) => {
                 req.query['user.username'] = {$ne : req.session.username}
             }
 
+            if (req.query.includeOwn){
+                delete req.query.includeOwn
+            }
+
+
+
+            
 
             aggregation.push({
                 $match: req.query
