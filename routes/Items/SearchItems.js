@@ -27,6 +27,10 @@ export default  async (req,res,next) => {
             if (toValidate.traded){
                 delete toValidate.traded
             }
+
+            if (toValidate.includeOwn){
+                delete toValidate.includeOwn
+            }
             // console.log(toValidate)
             if (Object.keys(toValidate).length>0){
                 try{
