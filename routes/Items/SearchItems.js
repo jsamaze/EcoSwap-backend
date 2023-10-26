@@ -147,7 +147,7 @@ export default  async (req,res,next) => {
                 delete req.query.traded
             }
 
-            if (!req.query.includeOwn){
+            if (req.query.includeOwn && req.query.includeOwn.toLowerCase() == 'false'){
                 req.query['user.username'] = {$ne : req.session.username}
             }
 
