@@ -1,6 +1,6 @@
 import { ItemModel} from "../../model/index.js";
 
-var matchedFields = ['tags','category','condition', "itemType", "username",'traded']
+var matchedFields = ['tags','category','condition', "itemType", "username",'traded','includeOwn']
 
 export default  async (req,res,next) => {
     try {
