@@ -6,6 +6,8 @@ export default  async (req,res,next) => {
     try {
         await checkItemOwnership(req.session.username,req.params.id)
 
+        var item = await ItemModel.findById(req.params.id).lean()
+
         await ItemModel
             .deleteOne({ _id: req.params.id })
         await ItemChatModel.deleteMany({item : req.params.id})
@@ -42,4 +44,24 @@ export default  async (req,res,next) => {
     res.status(200).send({
         status:"success",
     })
+
+      await Promise.all( item.photoName.map(
+        async name => {
+           try {
+                
+                let params = {
+                    Bucket: 'ecoswap',
+                    Key: name,
+                };
+               await s3.deleteObject(params).promise()
+           } catch (e){
+               console.log(e)
+               console.log("Problem with deleting photo")
+           }
+       }
+   ))
+
+
+
+
 }
