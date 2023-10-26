@@ -41,9 +41,6 @@ export default  async (req,res,next) => {
         return;
     }
 
-    res.status(200).send({
-        status:"success",
-    })
 
       await Promise.all( item.photoName.map(
         async name => {
