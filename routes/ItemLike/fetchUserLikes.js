@@ -32,11 +32,53 @@ export default async (req,res)=>{
                     createdAt : "$items.createdAt",
                     updatedAt : "$items.updatedAt",
                     photoName : "$items.photoName",
-                    views : "$items.views"
+                    views : "$items.views",
+                    user : "$items.user"
                 }
-            }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'user',
+                    foreignField: '_id',
+                    as: 'users'
+                }
+                },
+                { $unwind: { path: '$users' } },
+                {
+                $project: {
+                    user: '$users',
+                    itemType: 1,
+                    itemName: 1,
+                    description: 1,
+                    category: 1,
+                    condition: 1,
+                    lowerCaseTags: 1,
+                    createdAt: 1,
+                    updatedAt: 1,
+                    tags:1,
+                    photoName:1,
+                    views:1,
+                    done:1,
+                }
+                },
+                {
+                $project: {
+                    user: {
+                    email: 0,
+                    password: 0,
+                    photoName: 0,
+                    preferredBusStop: 0,
+                    emailVerified: 0,
+                    __v: 0,
+                    otp : 0,
+                    otpValidUntil : 0,
+                    about:0,
+                    }
+                }
+                }
         ])
-        console.log(itemsLiked)
+        // console.log(itemsLiked)
 
         for (const index in itemsLiked) {
             let item = itemsLiked[index]
