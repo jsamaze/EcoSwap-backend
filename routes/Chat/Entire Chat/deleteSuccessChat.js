@@ -53,7 +53,7 @@ export default  async (req,res,next) => {
 
             if (sellerItems.length==0 && buyerItems==0){
                 res.status(400).send({
-                    status : "please delete chat instead"
+                    status : "please at least trade/give one item"
                 })
                 return;
             }
