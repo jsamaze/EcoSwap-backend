@@ -10,6 +10,7 @@ export default  async (req,res,next) => {
             res.status(400).send({
                 status : "Issue with body"
             })
+            return;
         }
         if (req.session.username==req.params.username ){
             res.status(400).send({
@@ -59,6 +60,7 @@ export default  async (req,res,next) => {
             status : "failed to create chat",
             problem : e.message
         });
+        return;
     }
 
     try {

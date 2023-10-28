@@ -8,6 +8,8 @@ export default async (req,res) => {
             user.otp=undefined
             user.emailVerified=true
             user.otpValidUntil=undefined
+            await user.save();
+
             res.status(200).send({
                 status:"success"
             })
@@ -16,7 +18,6 @@ export default async (req,res) => {
                 status:"unable to verify OTP"
             })
         }
-        await user.save();
 
 
     } catch (e){

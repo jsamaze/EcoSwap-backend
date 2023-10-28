@@ -29,6 +29,7 @@ export default  async (req,res,next) => {
                     res.status(400).send({
                         status : "reject closing chat because not initiated yet"
                     })
+                    return;
                 }
                 try {
                     let id = (req.session.user_id == chatDoc.seller.toString()) ? chatDoc.buyer : chatDoc.seller
@@ -135,7 +136,7 @@ export default  async (req,res,next) => {
                     status:"endChatSuccess"
                 })
                 io.of("/").to(req.params.username).emit("endChatSuccess",req.session.username);
-
+                
                 try {
                     transporter.sendMail({
                         from: process.env.EMAIL,

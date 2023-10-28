@@ -21,6 +21,7 @@ export default  async (req,res,next) => {
             status:"failed",
             problem:err.message
         })
+        return;
     }
     try {
         var user = await UserModel.findOne({ username: req.session.username });
@@ -41,6 +42,7 @@ export default  async (req,res,next) => {
                     res.status(200).send({
                         status:"success but old photo not deleted"
                     })
+                    return;
                 } else {
                     console.log(data)
                 }
