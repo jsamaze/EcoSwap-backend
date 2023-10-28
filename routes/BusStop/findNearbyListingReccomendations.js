@@ -134,9 +134,9 @@ export default  async (req,res,next) => {
                   },
                   {
                     $project: {
-                      photoName: 0,
+                      // photoName: 0,
                       __v: 0,
-                      photoname: 0,
+                      // photoname: 0,
                       users: 0,
                       user: {
                         password: 0,
