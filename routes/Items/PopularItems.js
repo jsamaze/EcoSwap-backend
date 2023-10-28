@@ -77,6 +77,9 @@ export default async function  (req, res, next) {
                 'user.username' : {$ne : req.session.username}
             }
         })
+        aggregation.push({
+            $limit : 15
+        })
     }
     var result = await ItemModel.aggregate(aggregation);
 
