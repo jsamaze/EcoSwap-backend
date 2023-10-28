@@ -356,7 +356,7 @@ io.on('connection', (socket) => {
           var chatDoc = await ChatModel.findById(chat._id)
 
         
-          if (chat){
+          if (chat && !chat.closedOn){
               var userItems = await ItemChatModel.find({chat : chat._id, user: socket.request.session.user_id})
               console.log(userItems)
               var itemIdInList = userItems.map((e)=> e.item.toString());

@@ -10,7 +10,8 @@ export default  async (req,res,next) => {
         closed = (closed.toLowerCase() == "true")
         var chatsAsSeller = await ChatModel.aggregate(
             [
-              { $match: { closedOn: { $exists: false } } },
+              // { $match: { closedOn: { $exists: false } } },
+              { $match: { closedOn: { $exists: closed } } },
               {
                 $lookup: {
                   from: 'users',
@@ -56,7 +57,6 @@ export default  async (req,res,next) => {
                   buyer: { username: 1, fullName: 1 }
                 }
               },
-              { $match: { closedOn: { $exists: closed } } },
               { $match: { 'seller.username':  req.session.username } }
             ],
             { maxTimeMS: 60000, allowDiskUse: true }
@@ -64,7 +64,8 @@ export default  async (req,res,next) => {
 
         var chatsAsBuyer = await ChatModel.aggregate(
             [
-              { $match: { closedOn: { $exists: false } } },
+              // { $match: { closedOn: { $exists: false } } },
+              { $match: { closedOn: { $exists: closed } } },
               {
                 $lookup: {
                   from: 'users',
@@ -110,7 +111,6 @@ export default  async (req,res,next) => {
                   buyer: { username: 1, fullName: 1 }
                 }
               },
-              { $match: { closedOn: { $exists: closed } } },
               { $match: { 'buyer.username': req.session.username } }
             ],
             { maxTimeMS: 60000, allowDiskUse: true }
