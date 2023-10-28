@@ -72,17 +72,23 @@ export default  async (req,res,next) => {
                     seller : "<ul>",
                     buyer : "<ul>"
                 }
+
+                var sellerGave = []
+                var buyerGave =[]
+
                 for (const item of buyerItems){
                     let itemDoc = await ItemModel.findById(item._id);
                     itemDoc.done = new Date();
                     emailList.buyer += `<li>${itemDoc.itemName} || ${itemDoc.category }</li>`
                     await itemDoc.save()
+                    buyerGave.push(itemDoc._id)
                     await ItemChatModel.deleteMany({item : item._id})
                 }
                 for (const item of sellerItems){
                     let itemDoc = await ItemModel.findById(item._id);
                     itemDoc.done = new Date();
                     emailList.seller += `<li>${itemDoc.itemName} || ${itemDoc.category }</li>`
+                    sellerGave.push(itemDoc._id)
                     await itemDoc.save()
                     await ItemChatModel.deleteMany({item : item._id})
                 }
@@ -92,6 +98,8 @@ export default  async (req,res,next) => {
 
                 var chatDoc = await ChatModel.findById(chat._id);
                 chatDoc.closedOn = new Date();
+                chatDoc.buyerGave = buyerGave
+                chatDoc.sellerGave = sellerGave
                 switch (true){
                     case userRole == "buyer" && chat.sellerClose:
                         chatDoc.buyerClose=true

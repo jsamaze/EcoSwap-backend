@@ -1,5 +1,6 @@
 import { Schema } from "mongoose";
 import { messageSchema } from "./MessageSchema.js"
+import { ItemSchema } from "./ItemSchema.js";
 
 export let ChatSchema = new Schema ({
     seller : {  
@@ -32,7 +33,15 @@ export let ChatSchema = new Schema ({
     buyerClose : {
         type : Boolean,
         required : true
-    }
+    },
+    sellerGave : [{
+        type : 'ObjectId',
+        ref : 'item',
+    }],
+    buyerGave :[ {
+        type : 'ObjectId',
+        ref : 'item',
+    }]
 },
 {
     timestamps:true,

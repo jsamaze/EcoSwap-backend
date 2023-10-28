@@ -71,14 +71,14 @@ import fetchUserLikes from './routes/ItemLike/fetchUserLikes.js';
 // import findNearbyListing from './routes/BusStop/findNearbyListing.js';
 
 // access the cert
-// const key = fs.readFileSync('./HTTPS/key.pem'); //LOCAL
-// const cert = fs.readFileSync('./HTTPS/cert.pem'); //LOCAL
+const key = fs.readFileSync('./HTTPS/key.pem'); //LOCAL
+const cert = fs.readFileSync('./HTTPS/cert.pem'); //LOCAL
 
 //create the app
 const app = express();
 
-// const server = https.createServer({key: key, cert: cert }, app); //LOCAL
-const server = http.createServer(app)  //HEROKU
+const server = https.createServer({key: key, cert: cert }, app); //LOCAL
+// const server = http.createServer(app)  //HEROKU
 
 //integrate socket.io
 export const io = new Server(server, {
@@ -113,7 +113,7 @@ var sessionMiddleware= session({
     // exposedHeaders: ['set-cookie']
     // domain: process.env.DOMAIN, //To enable after full deployment
     sameSite:'none',
-    domain : "ecoswap.space", // enable for final deployment
+    domain : "localhost", // LOCAL / HEROKU
     secure :true,
     proxy : true,
   },
@@ -261,7 +261,7 @@ app.get("/busStop/nearbyListingsRecommended",NeedAuthenticate,findNearbyListingR
 
 // known issue - if too fast clicking the checkmark, will cause an error
 
-app.get("/chat/user/:username",NeedAuthenticate,fetchOneChat) //one chats //tested
+app.get("/chat/:chatId",NeedAuthenticate,fetchOneChat) //one chats //tested
 app.get("/chat",NeedAuthenticate,fetchChats) //recent chats
 app.post("/chat/user/:username",NeedAuthenticate, createChat)  //put item in body // tested
 app.patch("/chat/user/:username",NeedAuthenticate,deleteSuccessChat)
@@ -313,13 +313,12 @@ io.on('connection', (socket) => {
     console.log(`${username} connected`);
     socket.join(username)
   
-    socket.on("sendMessage",async (message,ack) => {
+    socket.on("sendMessage",async (message,chatId,ack) => {
       try {
-          var chat = await retrieveChat(username,message.to)
-          var chatDoc = await ChatModel.findById(chat._id)
-          if (chat){
+          var chatDoc = await ChatModel.findById(chatId).populate("seller", { username: 1, fullName: 1, _id:1, email:1 }).populate("buyer", { username: 1, fullName: 1, _id:1, email:1 })
+          if (chatDoc){
               chatDoc.messages.push({
-                  sender : chat.seller.username == username ? "seller" : "buyer",
+                  sender : chatDoc.seller.username == username ? "seller" : "buyer",
                   textContent: message.textContent
               })
               await chatDoc.save();
@@ -330,7 +329,8 @@ io.on('connection', (socket) => {
               socket.to(message.to).emit("message",{
                 sender : username,
                 textContent : message.textContent,
-                createdAt : chatDoc.messages[chatDoc.messages.length-1].createdAt
+                createdAt : chatDoc.messages[chatDoc.messages.length-1].createdAt,
+                chatId : chatDoc._id
             })
   
           } else { 
@@ -353,10 +353,10 @@ io.on('connection', (socket) => {
       const dest = to;
       try {
           var chat = await retrieveChat(to,username)
-          var chatDoc = await ChatModel.findById(chat._id)
 
         
           if (chat && !chat.closedOn){
+            var chatDoc = await ChatModel.findById(chat._id)
               var userItems = await ItemChatModel.find({chat : chat._id, user: socket.request.session.user_id})
               console.log(userItems)
               var itemIdInList = userItems.map((e)=> e.item.toString());
@@ -385,7 +385,7 @@ io.on('connection', (socket) => {
                   })
                 }
               }
-              socket.to(dest).emit("itemchat",username,items)
+              socket.to(dest).emit("itemchat",username,items,chatDoc._id)
 
               ack({
                   code :200,

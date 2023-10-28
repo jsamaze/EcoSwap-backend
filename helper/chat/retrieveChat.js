@@ -3,7 +3,7 @@ import { ChatModel } from "../../model/index.js";
 export default async function (username1, username2){
       var chat = await ChatModel.aggregate(
         [
-          // { $match: { closedOn: { $exists: false } } },
+          { $match: { closedOn: { $exists: false } } },
           {
             $lookup: {
               from: 'users',

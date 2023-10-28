@@ -6,6 +6,7 @@ export default  async (req,res,next) => {
     try {
         var chat = await retrieveChat(req.session.username,req.params.username);
         //one sided
+        //cannot closed a completed chat
 
         if (chat){
             await ChatModel.deleteOne({_id : chat._id});
