@@ -4,6 +4,7 @@
 //import important dependencies
 import express from 'express'
 import session from 'express-session';
+import compression from 'compression';
 import https from 'https';
 import connect_mongodb_session from 'connect-mongodb-session';
 import 'dotenv/config';
@@ -126,6 +127,9 @@ app.use(sessionMiddleware);
 
 //let socket use session
 io.engine.use(sessionMiddleware);
+
+//compress
+app.use(compression())
 
 // configure middleware
 app.use(express.json());
