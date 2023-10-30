@@ -75,7 +75,8 @@ export default  async (req,res,next) => {
                           {
                             text: {
                               query: wishListItem.itemName,
-                              path: 'itemName'
+                              path: 'itemName',
+                             score : { boost : { value : 1.5 } }
                             }
                           },
                           {
@@ -95,7 +96,7 @@ export default  async (req,res,next) => {
                             text: {
                               query: wishListItem.condition,
                               path: 'condition',
-                              score: { boost: { value: 1.5 } }
+                              // score: { boost: { value: 1.5 } }
                             }
                           },
                           {
@@ -105,7 +106,7 @@ export default  async (req,res,next) => {
                             }
                           }
                         ],
-                        minimumShouldMatch: 1,
+                        minimumShouldMatch: 2,
                         filter: [
                           {
                             text: {
