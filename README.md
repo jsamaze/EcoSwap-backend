@@ -2,9 +2,10 @@
 
 # REST API
 
-[See this video for introduction](https://youtu.be/-MTSQjw5DrM?si=2oWyxqk7njAVh_sH)
+>IMPORTANT : This documentation is not updated. The sample response and parameters may not be up to date.
 
-**IMPORTANT**
+
+**Note**
 - output only shown for GET endpoints
 - after login, the server will be able to know who made the request. No additional code needed in axios. If you want to know how, see [this](https://youtu.be/UBUNrFtufWo?si=MnWYYKEAxgpF2wmd
 ) video on cookie (we did not use JWT)
@@ -160,7 +161,7 @@ All the type are String
 `POST /item` | :heavy_check_mark: <br> ***by query e.g. `type: Listed`***|:heavy_check_mark: |:x: <br> automatic|:heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:|
 `PATCH /item/:id`| :x:|:heavy_check_mark: |:x: |:heavy_check_mark: | :heavy_check_mark:| :heavy_check_mark:| :heavy_check_mark:|
 
->> `includeOwn` give string `'true'`
+
 ### Response body in data - `GET /item/:id`
 
 ```json
@@ -217,6 +218,7 @@ All the type are String
 |"itemType"| `Listed`/`WishList` <br> defaults to `Listed` |
 | "username"| String|
 | "traded"| true/false <br> case insensitive|
+| 'includeOwn' | boolean (lowercase) |
 
 ## C. Map-related API
 
@@ -411,7 +413,7 @@ All the type are String
   ]
 ```
 ---
-#### About the components of chat - deprecated please refer to socket implementation
+> ### Deprecated - now uses socket
 
 | METHOD | Purpose |  Path | Need login | Need Query|
 | :-:| :-:| :-:|:-:|:-:|
