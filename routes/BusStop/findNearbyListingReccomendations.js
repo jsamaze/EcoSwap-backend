@@ -81,7 +81,7 @@ export default  async (req,res,next) => {
                           },
                           {
                             text: {
-                              query: wishListItem.description,
+                              query: (wishListItem.description ?? "no description"),
                               path: 'description'
                             }
                           },
