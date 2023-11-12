@@ -1,6 +1,33 @@
 # EcoSwap - Backend
 
-# REST API
+## Reflections by Joshua
+> This API backend is written entirely by me, so that the group can focus on writing the frontend. I leveraged on the knowledge i gained from SupportMe project
+> REST API is chosen as the group can use Axios to call and connect to this API, which is taught in class
+
+### Things I learned
+- I learned how to use MongoDB and the plethora of feature MongoDB has to offer such as geospatial queries and index based text search.
+- Despite MongoDB being a NoSQL database, I still stick with relational database principles (use of foreign keys, many-many relation) as there are many relationships each schema (e.g. user) partook in, thus making it more sensible to store the ID as foreign key isntead of the entire object
+- I learned that Mongoose can help me in enforcing schema rules, thus delegating the responsibility of backend validation to Mongoose without writing additional code.
+- I also learned how to use MongoDB query, both simple query and aggregation. Aggregation is interesting to use because I can use the aggregation tools in MongoDB compass to see each step of the pipeline and catch any bugs I wrote into the pipeline. 
+- I leanred session management using cookies and CORS. I read up on Same Origin Policy and how CORS work to help me configure the cors properly on the frontend and backend. I allso learned about the limitation of same-site and different-site cookie, and how to configure the cookie so that the browser will not reject it.
+- I learned how to store files. Initially, the files were stored in local storage. However, upon learning more, I moved the storage to AWS S3 bucket. There was a challenge in deciding how to retrieve the item in the bucket for the frontend to display. In the end, I decided to send a response with a signed URL instead of the file
+- I learned how to manage session using session.io for the chat functionality. Thankfully, session IO has built in intergration with express-session making it easy to keep track of which socket belongs to which user session.
+- I learned how to send emails from Gmail using app password authentication method.
+
+### Things to improve on next time
+- The code management definitely can be improved.
+> The routes should have been grouped into a single Route object
+> Helper functions (e.g. find chat) should be logically organised by schema/combined as part of the schema
+> Global objects (e.g. S3, nodemailer) should have been combined into one file
+> Code should be groupped according to MVC to encapsulate code from each other
+
+- The code have high coupling. For example, when a client requests a user information. The server actually makes several database query for the user information, the bus stop information, and reviews. The fact that the code for these queries is combined hampered refactoring later on in the development. The code should have been split up, either into methods within the mongoose model object, or a separate controller altogehter
+- The code is interwoven with the code for other logic. In the future (perhaps ESD project), email should be its own microservices using a message queue as it is not the most important functionality
+- The chatting system should be improved. As of now, each chat has a "buyer" and 'seller" but actually, a pair of distinct people can only have one ongoing chat. In future chat implementation, I should consider an alternative way of enforncing this rule without relying on code (perhaps using the concatenated result of the userID which has been sorted)
+-  In the future, to consider the use of services such as cloudinary to store pictures. 
+---
+
+## REST API
 
 >IMPORTANT : This documentation is not updated. The sample response and parameters may not be up to date.
 
