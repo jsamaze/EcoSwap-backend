@@ -1,7 +1,7 @@
 # EcoSwap - Backend
 
 ## Reflections by Joshua
-> This API backend is written entirely by me, so that the group can focus on writing the frontend. I leveraged on the knowledge i gained from SupportMe project
+> This API backend is written entirely by me, so that the group can focus on writing the frontend. I leveraged on the knowledge i gained from SupportMe project.
 > REST API is chosen as the group can use Axios to call and connect to this API, which is taught in class
 
 ### Things I learned
@@ -17,9 +17,9 @@
 ### Things to improve on next time
 - The code management definitely can be improved.
 > The routes should have been grouped into a single Route object
-> Helper functions (e.g. find chat) should be logically organised by schema/combined as part of the schema
-> Global objects (e.g. S3, nodemailer) should have been combined into one file
-> Code should be groupped according to MVC to encapsulate code from each other
+> Helper functions (e.g. find chat) should be logically organised by schema/combined as part of the schema.
+> Global objects (e.g. S3, nodemailer) should have been combined into one file.
+> Code should be groupped according to MVC to encapsulate code from each other.
 
 - The code have high coupling. For example, when a client requests a user information. The server actually makes several database query for the user information, the bus stop information, and reviews. The fact that the code for these queries is combined hampered refactoring later on in the development. The code should have been split up, either into methods within the mongoose model object, or a separate controller altogehter
 - The code is interwoven with the code for other logic. In the future (perhaps ESD project), email should be its own microservices using a message queue as it is not the most important functionality
